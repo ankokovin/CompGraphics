@@ -69,6 +69,7 @@ function onDelete(){
   if (selected_line!=-1){
     lines.splice(selected_line,1);
     redraw();
+    selected_line = -1;
   }
 }
 
