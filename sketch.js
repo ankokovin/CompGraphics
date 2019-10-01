@@ -1,26 +1,65 @@
-const width = 600;
-const height = 400;
-lines = []
+var width;
+var height;
+var lines;
 
-selected_line = -1;
-pressed_point = -1;
+var selected_line = -1;
+var pressed_point = -1;
 var v1 = null;
 var v2 = null;
-
+var cv = null;
+var addbt = null;
+var rembt = null;
+var widthsl = null;
+var heightsl = null;
+var widthp = null;
+var heightp = null;
 function setup() {
-  print(p5.Vector.dot(createVector(1,2,3),createVector(2,3,4)));
+  width = 600;
+  height = 400;
+  lines = [];
   cv = createCanvas(width, height);
   cv.mousePressed(onMousePressed);
   cv.mouseReleased(onMouseReleased);
   noLoop();
+  
   addbt = createButton("Добавить");
-  addbt.position(width+35,10);
   addbt.mousePressed(generateLine);
+  
   rembt = createButton("Удалить");
-  rembt.position(width+35, 40);
-  rembt.attribute('disabled');
   rembt.mousePressed(onDelete);
+
+  widthsl = createSlider(100, 1600, width);
+  widthsl.input(updateSize);
+
+  heightsl = createSlider(100, 1600, height);
+  heightsl.input(updateSize);
+
+  widthp = createP("Ширина"); 
+
+  heightp = createP("Высота");
+
+  place();
+  redraw();
 }
+
+function updateSize(){
+  width = widthsl.value();
+  height = heightsl.value();
+  place();
+  cv.resize(width, height);
+  redraw();
+}
+
+function place(){
+  cv.position(25, 40);
+  widthp.position(25,0);
+  widthsl.position(90, 13);
+  heightp.position(275, 0);
+  heightsl.position(335, 13);
+  addbt.position(width+35, 70);
+  rembt.position(width+35, 100);
+}
+
 
 function generateLine(){
   p1 = createVector(random(width), random(height));
