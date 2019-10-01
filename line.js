@@ -29,7 +29,7 @@ class Line{
       p.mult(t);
       p.add(this.p1);
       d = dist(p.x, p.y, mx, my)
-      if (d < prad)
+      if (d < prad && p.x >= min(this.p1.x, this.p2.x) && p.x <= max(this.p1.x, this.p2.x) && p.y >= min(this.p1.y, this.p2.y) && p.y <= max(this.p1.y, this.p2.y)) 
         res = [0, p];
     }
     
