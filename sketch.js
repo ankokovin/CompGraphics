@@ -93,10 +93,16 @@ function draw() {
   background(200);
   for (let i=0; i<lines.length;++i)
   {
-      lines[i].showline();
+      if (i != selected_line)
+        lines[i].showline();
   }
   for (let i=0; i<lines.length;++i)
   {
-      lines[i].showends();
+      if (i != selected_line)
+        lines[i].showends();
+  }
+  if (selected_line != -1){
+      lines[selected_line].showline();
+      lines[selected_line].showends();
   }
 }
