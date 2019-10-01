@@ -58,12 +58,19 @@ class Line{
   }
   
   
-  show(){
+  showline(){
     if (this.isSelected)
-    stroke('red');
+      stroke('red');
     else
       stroke('black');
     line(this.p1.x, this.p1.y, this.p2.x, this.p2.y);
+  }
+  
+  showends(){
+     if (this.isSelected)
+      stroke('red');
+    else
+      stroke('black');
     circle(this.p1.x, this.p1.y, prad);
     circle(this.p2.x, this.p2.y, prad);
   }
