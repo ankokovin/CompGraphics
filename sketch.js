@@ -93,6 +93,10 @@ function draw() {
   background(200);
   for (let i=0; i<lines.length;++i)
   {
-      lines[i].show();
+      lines[i].showline();
+  }
+  for (let i=0; i<lines.length;++i)
+  {
+      lines[i].showends();
   }
 }
