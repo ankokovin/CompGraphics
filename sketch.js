@@ -7,6 +7,7 @@ var pressed_point = -1;
 var v1 = null;
 var v2 = null;
 
+var linesDiv;
 
 function setup() {
   width = 600;
@@ -37,9 +38,13 @@ function setup() {
   widthp = createP("Ширина"); 
 
   heightp = createP("Высота");
-
+  linesDiv = createDiv().class("line-list");
   createDiv().class("main-container")
-    .child(cv)
+    .child(
+      createDiv().class("cv")
+      .child(cv)
+      .child(linesDiv)
+    )
     .child(
       createDiv().class("toolbox")
       .child(createDiv().class("toolbox-part")
@@ -55,7 +60,7 @@ function setup() {
           .child(addbt)
           .child(rembt)
       )
-    )
+    );
 
   redraw();
 }
@@ -80,8 +85,8 @@ function place(){
 
 
 function generateLine(){
-  p1 = createVector(random(width), random(height));
-  p2 = createVector(random(width), random(height));
+  p1 = createVector(int(random(width)), int(random(height)));
+  p2 = createVector(int(random(width)), int(random(height)));
   lines.push(new Line(p1,p2));
   redraw();
 }
@@ -122,11 +127,12 @@ function onMousePressed(){
   redraw();
 }
 
+
 function onDelete(){
   if (selected_line!=-1){
     lines.splice(selected_line,1);
-    redraw();
     selected_line = -1;
+    redraw();
   }
 }
 
@@ -163,5 +169,22 @@ function draw() {
   if (selected_line != -1){
       lines[selected_line].showline();
       lines[selected_line].showends();
+  }
+  linesDiv.html("");
+  linesDiv.child(createP("Отрезки"))
+  for (let i=0; i<lines.length;++i){
+    let p = lines[i].get_points();
+    linesDiv.child(
+      createP("("+p[0].x+";"+p[0].y+"),("+p[1].x+";"+p[1].y+")")
+      .mousePressed(
+        function(){
+          if (selected_line != -1)
+            lines[selected_line].isSelected = false;
+          selected_line = i;
+          lines[i].isSelected = true;
+          redraw();
+        }
+      ).style("color",(i === selected_line)?"red":"black")
+    );
   }
 }

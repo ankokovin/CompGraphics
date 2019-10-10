@@ -5,10 +5,13 @@ html, body {
   p{
     margin: 0;
   }
+  .cv{
+    display: flex;
+    grid-area: cv;
+    flex-direction: row;
+  }
   canvas {
     display: block;
-    grid-area: cv;
-
   }
   button {
     margin: 5px;
@@ -24,10 +27,16 @@ html, body {
     flex-direction: column;
     margin: 5px;
   }
+  .line-list{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
 
   .main-container{
     display: grid;
     grid-template: 
-      "tb tb" 20vh
-      "cv ."  auto
+      "tb" 20vh
+      "cv"  auto;
   }
