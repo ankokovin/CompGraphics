@@ -39,13 +39,13 @@ class Line{
   update(p){
      if(p == 1)
      {
-       this.p1.x = mouseX;
-       this.p1.y = mouseY;
+       this.p1.x = int(mouseX);
+       this.p1.y = int(mouseY);
      }
     if (p == 2)
     {
-      this.p2.x = mouseX;
-      this.p2.y = mouseY;
+      this.p2.x = int(mouseX);
+      this.p2.y = int(mouseY);
     }
   }
 
