@@ -10,7 +10,7 @@ var v2 = null;
 var linesDiv;
 
 function setup() {
-  width = 600;
+  width = max(windowWidth - 250, 400);
   height = 400;
   lines = [];
 
