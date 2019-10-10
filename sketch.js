@@ -6,58 +6,76 @@ var selected_line = -1;
 var pressed_point = -1;
 var v1 = null;
 var v2 = null;
-var cv = null;
-var addbt = null;
-var rembt = null;
-var widthsl = null;
-var heightsl = null;
-var widthp = null;
-var heightp = null;
+
+
 function setup() {
   width = 600;
   height = 400;
   lines = [];
+
   cv = createCanvas(width, height);
   cv.mousePressed(onMousePressed);
   cv.mouseReleased(onMouseReleased);
   noLoop();
   
-  addbt = createButton("Добавить");
+  addbt = createButton("Добавить линию");
   addbt.mousePressed(generateLine);
   
-  rembt = createButton("Удалить");
+  rembt = createButton("Удалить линию");
   rembt.mousePressed(onDelete);
 
-  widthsl = createSlider(100, 1600, width);
-  widthsl.input(updateSize);
+  widthsl = createInput(width, 'number');
+  widthsl.attribute('min', 100);
+  widthsl.attribute('max', 1600);
 
-  heightsl = createSlider(100, 1600, height);
-  heightsl.input(updateSize);
+  heightsl = createInput(height, 'number');
+  heightsl.attribute('min', 100);
+  heightsl.attribute('max', 1600);
 
+  resizebt = createButton("Обновить размер");
+  resizebt.mousePressed(updateSize);
   widthp = createP("Ширина"); 
 
   heightp = createP("Высота");
 
-  place();
+  createDiv().class("main-container")
+    .child(cv)
+    .child(
+      createDiv().class("toolbox")
+      .child(createDiv().class("toolbox-part")
+        .child(
+          createDiv().child(widthp).child(widthsl)
+        )
+        .child(
+          createDiv().child(heightp).child(heightsl)
+        )
+        .child(resizebt)
+      )
+      .child(createDiv().class("toolbox-part")
+          .child(addbt)
+          .child(rembt)
+      )
+    )
+
   redraw();
 }
 
 function updateSize(){
-  width = widthsl.value();
-  height = heightsl.value();
-  place();
-  cv.resize(width, height);
+  width = int(widthsl.value());
+  height = int(heightsl.value());
+  resizeCanvas(width, height);
   redraw();
 }
 
 function place(){
-  cv.position(25, 40);
-  widthp.position(25,0);
-  widthsl.position(90, 13);
-  heightp.position(275, 0);
-  heightsl.position(335, 13);
-  addbt.position(width+35, 70);
-  rembt.position(width+35, 100);
+  //cv.position(25, 90);
+  //widthp.position(25,0);
+  //widthsl.position(90, 13);
+  //heightp.position(25, 25);
+  //heightsl.position(90, 38);
+  //resizebt.position(25, 63);
+  //addbt.position(width+35, 90);
+  //rembt.position(width+35, 120);
 }
 
 
@@ -120,6 +138,8 @@ function mouseDragged(){
       lines[selected_line].update(pressed_point);
 
     redraw();
+  }else{
+    
   }
 }
 

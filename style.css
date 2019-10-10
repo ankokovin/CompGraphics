@@ -1,8 +1,33 @@
 html, body {
-    margin: 50;
-    padding: 50;
+    margin: 5px;
+    padding: 5px;
+  }
+  p{
+    margin: 0;
   }
   canvas {
     display: block;
+    grid-area: cv;
+
   }
-  
+  button {
+    margin: 5px;
+  }
+  .toolbox{
+    display: flex;
+    flex-direction: row;
+    grid-area: tb;
+    margin-bottom: 5px;
+  }
+  .toolbox-part{
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+  }
+
+  .main-container{
+    display: grid;
+    grid-template: 
+      "tb tb" 20vh
+      "cv ."  auto
+  }
