@@ -117,6 +117,7 @@ function onMousePressed(){
     selected_line = lineid;
     pressed_point = curmax[0];
     lines[selected_line].isSelected = true;
+    lines[selected_line].selectedPointIdx = pressed_point;
     if (pressed_point == 0)
     {
       let points = lines[selected_line].get_points();
@@ -137,12 +138,8 @@ function onDelete(){
 }
 
 function mouseDragged(){
-  if (selected_line != -1 && pressed_point != -1){
-    if (pressed_point == 0)
-      lines[selected_line].updateParallel();
-    else
-      lines[selected_line].update(pressed_point);
-
+  if (selected_line != -1){
+    lines[selected_line].move();
     redraw();
   }else{
     
@@ -151,7 +148,8 @@ function mouseDragged(){
 
 function onMouseReleased(){
   redraw();
-  pressed_point = -1;
+  //pressed_point = -1;
+  lines[selected_line].selectedPointIdx = -1;
 }
 
 function draw() {

@@ -6,12 +6,21 @@ class Line{
     this.isSelected = false;
     this.v1 = null;
     this.v2 = null;
+    this.selectedPointIdx = -1;
   }
   
   get_points(){
     return [this.p1, this.p2];
   }
   
+  move(){
+    if (this.selectedPointIdx == -1)
+      return;
+    if (this.selectedPointIdx == 0)
+      lines[selected_line].updateParallel();
+    else
+      lines[selected_line].update(pressed_point);
+  }
   
   close_point(){
     var res = null;
