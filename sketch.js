@@ -92,7 +92,7 @@ function generateLine(){
 }
 
 function onMousePressed(){
-  let mx = mouseX, my = mouseY;
+  
   if (selected_line != -1)
     lines[selected_line].isSelected = false;
   
@@ -103,9 +103,9 @@ function onMousePressed(){
   var curd = 0;
   var lineid = -1;
   for (let i=0; i<lines.length;++i){
-     let res = lines[i].close_point(mx, my);
+     let res = lines[i].close_point();
      if (res != null){
-      var d = dist(mx, my, res[1].x, res[1].y);
+      var d = dist(mouseX, mouseY, res[1].x, res[1].y);
       if (curmax == null || d<curd){
         curmax = res;
         curd = d;
@@ -120,8 +120,8 @@ function onMousePressed(){
     if (pressed_point == 0)
     {
       let points = lines[selected_line].get_points();
-      v1 = createVector(points[0].x - mx, points[0].y - my);
-      v2 = createVector(points[1].x - mx, points[1].y - my);
+      lines[selected_line].v1 = createVector(points[0].x - mouseX, points[0].y - mouseY);
+      lines[selected_line].v2 = createVector(points[1].x - mouseX, points[1].y - mouseY);
     }
   }
   redraw();
