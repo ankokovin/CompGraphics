@@ -139,7 +139,7 @@ function onDelete(){
 function mouseDragged(){
   if (selected_line != -1 && pressed_point != -1){
     if (pressed_point == 0)
-      lines[selected_line].updateParallel(v1,v2);
+      lines[selected_line].updateParallel();
     else
       lines[selected_line].update(pressed_point);
 
