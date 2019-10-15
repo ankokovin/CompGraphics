@@ -83,14 +83,14 @@ function place(){
 
 
 function generateLine(){
-  p1 = createVector(int(random(width)), int(random(height)));
-  p2 = createVector(int(random(width)), int(random(height)));
+  p1 = new vector3(int(random(width)), int(random(height)));
+  p2 = new vector3(int(random(width)), int(random(height)));
   lines.push(new Line(p1,p2));
   redraw();
 }
 
 function onMousePressed(){
-  
+  let mouse = new vector3(mouseX, mouseY);
   if (selected_line != -1)
     lines[selected_line].isSelected = false;
   
@@ -101,9 +101,9 @@ function onMousePressed(){
   var curd = 0;
   var lineid = -1;
   for (let i=0; i<lines.length;++i){
-     let res = lines[i].close_point();
+     let res = lines[i].close_point(mouse);
      if (res != null){
-      var d = dist(mouseX, mouseY, res[1].x, res[1].y);
+      var d = mouse.dist(res[1]);
       if (curmax == null || d<curd){
         curmax = res;
         curd = d;
@@ -119,8 +119,8 @@ function onMousePressed(){
     if (pressed_point == 0)
     {
       let points = lines[selected_line].get_points();
-      lines[selected_line].v1 = createVector(points[0].x - mouseX, points[0].y - mouseY);
-      lines[selected_line].v2 = createVector(points[1].x - mouseX, points[1].y - mouseY);
+      lines[selected_line].v1 = points[0].sub(mouse);
+      lines[selected_line].v2 = points[1].sub(mouse);
     }
   }
   redraw();
@@ -146,7 +146,8 @@ function mouseDragged(){
 
 function onMouseReleased(){
   redraw();
-  lines[selected_line].selectedPointIdx = -1;
+  if (selected_line != -1)
+    lines[selected_line].selectedPointIdx = -1;
 }
 
 function draw() {

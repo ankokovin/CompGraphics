@@ -22,24 +22,26 @@ class Line{
       lines[selected_line].update(pressed_point);
   }
   
-  close_point(){
+  close_point(mouse){
     var res = null;
-    var d = dist(mouseX, mouseY, this.p1.x, this.p1.y);
+    var d = mouse.dist(this.p1);
     if (d < prad)
         res = [1, this.p1];
-    var d2 = dist(mouseX, mouseY, this.p2.x, this.p2.y);
+    var d2 = mouse.dist(this.p2);
     if (d2 < prad && d2<d)
       res = [2, this.p2];
 
     if (res == null){
-      var a = p5.Vector.sub(createVector(mouseX,mouseY),this.p1);
-      var b = p5.Vector.sub(this.p2, this.p1);
-      var t = p5.Vector.dot(a,b) / b.mag();
+      this.p1.norm_op();
+      this.p2.norm_op();
+      var a = mouse.sub(this.p1);
+      var b = this.p2.sub(this.p1);
+      var t = a.dot(b) / b.mag();
       var p = b;
-      p.normalize();
+      p.norm();
       p.mult(t);
-      p.add(this.p1);
-      d = dist(p.x, p.y, mouseX, mouseY)
+      p = p.add(this.p1);
+      d = mouse.dist(p);
       if (d < prad && p.x >= min(this.p1.x, this.p2.x) && p.x <= max(this.p1.x, this.p2.x) && p.y >= min(this.p1.y, this.p2.y) && p.y <= max(this.p1.y, this.p2.y)) 
         res = [0, p];
     }
