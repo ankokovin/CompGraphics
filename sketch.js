@@ -7,8 +7,6 @@ var pressed_point = -1;
 var v1 = null;
 var v2 = null;
 
-var linesDiv;
-
 function setup() {
   width = max(windowWidth - 500, 400);
   height = 400;
@@ -138,11 +136,44 @@ function onDelete(){
 function mouseDragged(){
   if (selected_line != -1){
     lines[selected_line].move();
-    redraw();
-  }else{
-    
+  }
+  redraw();
+  show_point_coords();
+}
+
+function show_point_coords(){
+  let mouse = new vector3(mouseX, mouseY);
+  let mindist = 1000000;
+  let p = null;
+  for (let index = 0; index < lines.length; index++) {
+    const element = lines[index];
+    let d = element.p1.dist(mouse);
+    if (d < mindist)
+    {
+      mindist = d;
+      p = element.p1.copy();
+    }
+    d = element.p2.dist(mouse);
+    if (d < mindist)
+    {
+      mindist = d;
+      p = element.p2.copy();
+    }
+  }
+  if (mindist < 5){
+    p.norm_op();
+    stroke('black');
+    text('('+p.x+';'+p.y+')',mouse.x, mouse.y);
   }
 }
+
+function mouseMoved(){
+  redraw();
+  show_point_coords();
+}
+
+  
+
 
 function onMouseReleased(){
   redraw();
@@ -165,6 +196,7 @@ function draw() {
   if (selected_line != -1){
       lines[selected_line].showline();
       lines[selected_line].showends();
+      lines[selected_line].showparams();
   }
   
   

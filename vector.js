@@ -37,8 +37,8 @@ class vector3{
         let lhs = this.copy();
         let rhs = input.copy();
         return new vector3(
-            lhs.y*rhs.z - lhs.z*rhs.y,
-            lhs.z*rhs.x - lhs.x*rhs.z,
+            lhs.y*rhs.op - lhs.op*rhs.y,
+            lhs.op*rhs.x - lhs.x*rhs.op,
             lhs.x*rhs.y - lhs.y*rhs.x
             );
     }
@@ -57,6 +57,12 @@ class vector3{
     mult(scalar){
         this.x *= scalar;
         this.y *= scalar;
+    }
+
+    div_full(scalar){
+        this.x /= scalar;
+        this.y /= scalar;
+        this.op /= scalar;
     }
 
     add(input){

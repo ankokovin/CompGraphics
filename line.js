@@ -1,3 +1,9 @@
+function gcd(a,b){
+  if (b>a) return gcd(b,a);
+  if (b == 0) return a;
+  return gcd(b, a%b);
+}
+
 prad = 10;
 class Line{
   constructor(p1, p2){
@@ -89,4 +95,23 @@ class Line{
     circle(this.p2.x, this.p2.y, prad);
   }
   
+  get_params(){
+    let result = this.p1.cross(this.p2);
+    return result;
+  }
+
+  showparams(){
+    stroke('red');
+    let mid = this.p1.add(this.p2);
+    mid.mult(0.5);
+    mid.norm_op();
+    let params = this.get_params();
+    let div = gcd(abs(params.x), gcd(abs(params.y), abs(params.op)));
+    params.div_full(div);
+    text(
+      '('+params.x+';'+params.y+';'+params.op+')',
+      mid.x, mid.y);
+
+  }
+
 }
