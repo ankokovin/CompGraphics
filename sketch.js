@@ -10,7 +10,7 @@ var v2 = null;
 var linesDiv;
 
 function setup() {
-  width = max(windowWidth - 250, 400);
+  width = max(windowWidth - 500, 400);
   height = 400;
   lines = [];
 
@@ -38,12 +38,10 @@ function setup() {
   widthp = createP("Ширина"); 
 
   heightp = createP("Высота");
-  linesDiv = createDiv().class("line-list");
   createDiv().class("main-container")
     .child(
       createDiv().class("cv")
       .child(cv)
-      .child(linesDiv)
     )
     .child(
       createDiv().class("toolbox")
@@ -148,7 +146,6 @@ function mouseDragged(){
 
 function onMouseReleased(){
   redraw();
-  //pressed_point = -1;
   lines[selected_line].selectedPointIdx = -1;
 }
 
@@ -168,21 +165,6 @@ function draw() {
       lines[selected_line].showline();
       lines[selected_line].showends();
   }
-  linesDiv.html("");
-  linesDiv.child(createP("Отрезки"))
-  for (let i=0; i<lines.length;++i){
-    let p = lines[i].get_points();
-    linesDiv.child(
-      createP("("+p[0].x+";"+p[0].y+"),("+p[1].x+";"+p[1].y+")")
-      .mousePressed(
-        function(){
-          if (selected_line != -1)
-            lines[selected_line].isSelected = false;
-          selected_line = i;
-          lines[i].isSelected = true;
-          redraw();
-        }
-      ).style("color",(i === selected_line)?"red":"black")
-    );
-  }
+  
+  
 }

@@ -27,13 +27,6 @@ html, body {
     flex-direction: column;
     margin: 5px;
   }
-  .line-list{
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-  }
-
   .main-container{
     display: grid;
     grid-template: 
