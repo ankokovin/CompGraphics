@@ -23,6 +23,10 @@ function setup() {
   rembt = createButton("Удалить линию");
   rembt.mousePressed(onDelete);
 
+  showaxesbt = createButton("Показать оси координат");
+  showaxesbt.mousePressed(show_axes);
+
+
   widthsl = createInput(width, 'number');
   widthsl.attribute('min', 100);
   widthsl.attribute('max', 1600);
@@ -55,6 +59,7 @@ function setup() {
       .child(createDiv().class("toolbox-part")
           .child(addbt)
           .child(rembt)
+          .child(showaxesbt)
       )
     );
 
@@ -215,6 +220,25 @@ function show_point_coords(){
     p.norm_op();
     stroke('black');
     text('('+p.x+';'+p.y+')',mouse.x+ width/2, - mouse.y + height/2);
+  }
+}
+const axes_step = 50;
+function show_axes(){
+  stroke("black");
+  fill("white");
+  line(width/2, 0, width/2, height);
+  line(width/2, 0, width/2 + 5, 10);
+  line(width/2, 0, width/2 - 5, 10);
+  line(0, height/2, width, height/2);
+  line(width, height/2, width -10, height/2 - 5);
+  line(width, height/2, width -10, height/2 + 5);
+  for(let i = Math.floor((width/2)/axes_step - 1)*axes_step ; i > -(width/2); i-= axes_step){
+    line(width/2-i, height/2-5,width/2-i, height/2+5);
+    text(i, width/2-i, height/2);
+  }
+  for(let i = Math.floor((height/2)/axes_step - 1)*axes_step ; i > -(height/2); i-= axes_step){
+    line(width/2-5, height/2 - i, width/2 + 5, height/2 - i);
+    text(i, width/2, height/2 - i);
   }
 }
 
