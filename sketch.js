@@ -6,7 +6,7 @@ var selected_lines = new Set();
 var pressed_point = -1;
 var v1 = null;
 var v2 = null;
-
+var do_show_axes = false;
 function setup() {
   width = max(windowWidth - 500, 400);
   height = 400;
@@ -24,7 +24,10 @@ function setup() {
   rembt.mousePressed(onDelete);
 
   showaxesbt = createButton("Показать оси координат");
-  showaxesbt.mousePressed(show_axes);
+  showaxesbt.mousePressed(()=>{
+    do_show_axes = !do_show_axes;
+    redraw();
+  });
 
 
   widthsl = createInput(width, 'number');
@@ -232,11 +235,11 @@ function show_axes(){
   line(0, height/2, width, height/2);
   line(width, height/2, width -10, height/2 - 5);
   line(width, height/2, width -10, height/2 + 5);
-  for(let i = Math.floor((width/2)/axes_step - 1)*axes_step ; i > -(width/2); i-= axes_step){
-    line(width/2-i, height/2-5,width/2-i, height/2+5);
-    text(i, width/2-i, height/2);
+  for(let i = Math.floor((width/2)/axes_step)*axes_step ; i > -(width/2)+1; i-= axes_step){
+    line(i+width/2, height/2-5,i+width/2, height/2+5);
+    text(i, i+width/2, height/2);
   }
-  for(let i = Math.floor((height/2)/axes_step - 1)*axes_step ; i > -(height/2); i-= axes_step){
+  for(let i = Math.floor((height/2)/axes_step - 1)*axes_step ; i > -(height/2)+1; i-= axes_step){
     line(width/2-5, height/2 - i, width/2 + 5, height/2 - i);
     text(i, width/2, height/2 - i);
   }
@@ -258,6 +261,8 @@ function onMouseReleased(){
 
 function draw() {
   background(200);
+  if (do_show_axes)
+    show_axes();
   for (let i=0; i<lines.length;++i)
   {
       if (!selected_lines.has(i))
