@@ -23,9 +23,9 @@ class Line{
     if (this.selectedPointIdx == -1)
       return;
     if (this.selectedPointIdx == 0)
-      lines[selected_line].updateParallel();
+      this.updateParallel();
     else
-      lines[selected_line].update(pressed_point);
+      this.update(pressed_point);
   }
   
   close_point(mouse){

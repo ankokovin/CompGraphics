@@ -2,7 +2,7 @@ var width;
 var height;
 var lines;
 
-var selected_line = -1;
+var selected_lines = new Set();
 var pressed_point = -1;
 var v1 = null;
 var v2 = null;
@@ -91,58 +91,68 @@ function onMousePressed(){
   let mouse = new vector3(mouseX, mouseY);
   if (keyIsDown(SHIFT)){
     console.log("Shift is pressed");
-    
+
   }
   else{
 
-    if (selected_line != -1)
-    lines[selected_line].isSelected = false;
+
+    selected_lines.forEach(function(element){
+      lines[element].isSelected = false;
+    });
+      
+    selected_lines.clear();
+    pressed_point = -1;
     
-  selected_line = -1;
-  pressed_point = -1;
-  
-  var curmax = null;
-  var curd = 0;
-  var lineid = -1;
-  for (let i=0; i<lines.length;++i){
-     let res = lines[i].close_point(mouse);
-     if (res != null){
-      var d = mouse.dist(res[1]);
-      if (curmax == null || d<curd){
-        curmax = res;
-        curd = d;
-        lineid = i;
+    var curmax = null;
+    var curd = 0;
+    var lineid = -1;
+    for (let i=0; i<lines.length;++i){
+      let res = lines[i].close_point(mouse);
+      if (res != null){
+        var d = mouse.dist(res[1]);
+        if (curmax == null || d<curd){
+          curmax = res;
+          curd = d;
+          lineid = i;
+        }
       }
     }
-  }
-  if (curmax != null){
-    selected_line = lineid;
-    pressed_point = curmax[0];
-    lines[selected_line].isSelected = true;
-    lines[selected_line].selectedPointIdx = pressed_point;
-    if (pressed_point == 0)
-    {
-      let points = lines[selected_line].get_points();
-      lines[selected_line].v1 = points[0].sub(mouse);
-      lines[selected_line].v2 = points[1].sub(mouse);
+    if (curmax != null){
+      selected_lines.add(lineid);
+      pressed_point = curmax[0];
+      lines[lineid].isSelected = true;
+      lines[lineid].selectedPointIdx = pressed_point;
+      if (pressed_point == 0)
+      {
+        let points = lines[lineid].get_points();
+        lines[lineid].v1 = points[0].sub(mouse);
+        lines[lineid].v2 = points[1].sub(mouse);
+      }
     }
+    redraw();
   }
-  redraw();
-}
 }
 
 
 function onDelete(){
-  if (selected_line!=-1){
-    lines.splice(selected_line,1);
-    selected_line = -1;
+  if (selected_lines.size>0){
+    let nlines = [];
+    for (let index = 0; index < lines.length; index++) {
+      const element = lines[index];
+      if (!selected_lines.has(index)){
+        nlines.push(element);
+      }
+    }
+    lines = nlines;
+    selected_lines.clear();
     redraw();
   }
 }
 
 function mouseDragged(){
   mouse = new vector3(mouseX, mouseY);
-  if (selected_line != -1){
+  if (selected_lines.size == 1){
+    let selected_line = selected_lines.values().next().value;
     lines[selected_line].move();
     if (pressed_point > 0){
       
@@ -204,27 +214,32 @@ function mouseMoved(){
 
 function onMouseReleased(){
   redraw();
-  if (selected_line != -1)
-    lines[selected_line].selectedPointIdx = -1;
+  if (selected_lines.size == 1)
+    lines[selected_lines.values().next().value].selectedPointIdx = -1;
 }
 
 function draw() {
   background(200);
   for (let i=0; i<lines.length;++i)
   {
-      if (i != selected_line)
+      if (!selected_lines.has(i))
         lines[i].showline();
   }
   for (let i=0; i<lines.length;++i)
   {
-      if (i != selected_line)
+    if (!selected_lines.has(i))
         lines[i].showends();
   }
-  if (selected_line != -1){
-      lines[selected_line].showline();
-      lines[selected_line].showends();
-      lines[selected_line].showparams();
+  for (let i = 0; i < lines.length; i++) {
+    if (selected_lines.has(i))
+      lines[i].showline();
   }
-  
-  
+  for (let i = 0; i < lines.length; i++) {
+    if (selected_lines.has(i))
+      lines[i].showends();
+  }
+  for (let i = 0; i < lines.length; i++) {
+    if (selected_lines.has(i))
+      lines[i].showparams();
+  }  
 }
