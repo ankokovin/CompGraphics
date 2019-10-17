@@ -56,24 +56,22 @@ class Line{
   }
   
   update(selectedPointIdx){
-     if(selectedPointIdx == 1)
+    mouse = mouseVector();
+    if(selectedPointIdx == 1)
      {
-       this.p1.x = int(mouseX);
-       this.p1.y = int(mouseY);
+       this.p1 = mouse;
      }
     if (selectedPointIdx == 2)
     {
-      this.p2.x = int(mouseX);
-      this.p2.y = int(mouseY);
+      this.p2 = mouse;
     }
   }
 
 
   updateParallel(){
-    this.p1.x = mouseX+this.v1.x;
-    this.p1.y = mouseY+this.v1.y;
-    this.p2.x = mouseX+this.v2.x;
-    this.p2.y = mouseY+this.v2.y;
+    mouse = mouseVector();
+    this.p1 = mouse.add(this.v1);
+    this.p2 = mouse.add(this.v2);
   }
   
   
@@ -82,7 +80,10 @@ class Line{
       stroke('red');
     else
       stroke('black');
-    line(this.p1.x, this.p1.y, this.p2.x, this.p2.y);
+    line(this.p1.x + width/2, 
+      height/2 - this.p1.y, 
+      this.p2.x + width/2, 
+      height/2 - this.p2.y);
   }
   
   showends(){
@@ -91,8 +92,8 @@ class Line{
       stroke('red');
     else
       stroke('black');
-    circle(this.p1.x, this.p1.y, prad);
-    circle(this.p2.x, this.p2.y, prad);
+    circle(this.p1.x + width/2,  height/2 - this.p1.y , prad);
+    circle(this.p2.x + width/2,  height/2 - this.p2.y , prad);
   }
   
   get_params(){
@@ -110,7 +111,7 @@ class Line{
     params.div_full(div);
     text(
       '('+params.x+';'+params.y+';'+params.op+')',
-      mid.x, mid.y);
+      mid.x+ width/2, - mid.y+ height/2);
 
   }
 

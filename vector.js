@@ -1,8 +1,8 @@
 class vector3{
     constructor(x, y, op){
-        this.x = x;
-        this.y = y;
-        this.op = (op === undefined)?1:op;
+        this.x = int(x);
+        this.y = int(y);
+        this.op = (op === undefined)?1:int(op);
     }
 
     norm_op(){
@@ -76,4 +76,8 @@ class vector3{
     copy(){
         return new vector3(this.x, this.y, this.op);
     }
+}
+
+function mouseVector(){
+    return new vector3(mouseX - width/2,  height/2 - mouseY);
 }

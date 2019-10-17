@@ -81,14 +81,14 @@ function place(){
 
 
 function generateLine(){
-  p1 = new vector3(int(random(width)), int(random(height)));
-  p2 = new vector3(int(random(width)), int(random(height)));
+  p1 = new vector3(int(random(width)) - width/2, - int(random(height)) + height/2);
+  p2 = new vector3(int(random(width)) - width/2, - int(random(height)) + height/2);
   lines.push(new Line(p1,p2));
   redraw();
 }
 
 function onMousePressed(){
-  let mouse = new vector3(mouseX, mouseY);
+  let mouse = mouseVector();
     pressed_point = 0;
     var curmax = null;
     var curd = 0;
@@ -160,7 +160,7 @@ function onDelete(){
 }
 
 function mouseDragged(){
-  mouse = new vector3(mouseX, mouseY);
+  mouse = mouseVector();
   if (selected_lines.size == 1){
     let selected_line = selected_lines.values().next().value;
     lines[selected_line].move();
@@ -193,7 +193,7 @@ function mouseDragged(){
 }
 
 function show_point_coords(){
-  let mouse = new vector3(mouseX, mouseY);
+  let mouse = mouseVector();
   let mindist = 1000000;
   let p = null;
   for (let index = 0; index < lines.length; index++) {
@@ -214,7 +214,7 @@ function show_point_coords(){
   if (mindist < 5){
     p.norm_op();
     stroke('black');
-    text('('+p.x+';'+p.y+')',mouse.x, mouse.y);
+    text('('+p.x+';'+p.y+')',mouse.x+ width/2, - mouse.y + height/2);
   }
 }
 
