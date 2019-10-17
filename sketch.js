@@ -89,9 +89,15 @@ function generateLine(){
 
 function onMousePressed(){
   let mouse = new vector3(mouseX, mouseY);
-  if (selected_line != -1)
+  if (keyIsDown(SHIFT)){
+    console.log("Shift is pressed");
+    
+  }
+  else{
+
+    if (selected_line != -1)
     lines[selected_line].isSelected = false;
-  
+    
   selected_line = -1;
   pressed_point = -1;
   
@@ -122,6 +128,7 @@ function onMousePressed(){
     }
   }
   redraw();
+}
 }
 
 
