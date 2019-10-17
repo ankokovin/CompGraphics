@@ -12,7 +12,7 @@ class Line{
     this.isSelected = false;
     this.v1 = null;
     this.v2 = null;
-    this.selectedPointIdx = -1;
+    this.selectedPointIdx = 0;
   }
   
   get_points(){

@@ -89,20 +89,7 @@ function generateLine(){
 
 function onMousePressed(){
   let mouse = new vector3(mouseX, mouseY);
-  if (keyIsDown(SHIFT)){
-    console.log("Shift is pressed");
-
-  }
-  else{
-
-
-    selected_lines.forEach(function(element){
-      lines[element].isSelected = false;
-    });
-      
-    selected_lines.clear();
-    pressed_point = -1;
-    
+    pressed_point = 0;
     var curmax = null;
     var curd = 0;
     var lineid = -1;
@@ -118,20 +105,43 @@ function onMousePressed(){
       }
     }
     if (curmax != null){
-      selected_lines.add(lineid);
-      pressed_point = curmax[0];
-      lines[lineid].isSelected = true;
-      lines[lineid].selectedPointIdx = pressed_point;
-      if (pressed_point == 0)
-      {
-        let points = lines[lineid].get_points();
-        lines[lineid].v1 = points[0].sub(mouse);
-        lines[lineid].v2 = points[1].sub(mouse);
+      if (keyIsDown(SHIFT) && selected_lines.has(lineid)){
+        lines[lineid].isSelected = false;
+        selected_lines.delete(lineid);
+      }else{
+
+        if (!keyIsDown(SHIFT) && !selected_lines.has(lineid)){
+          selected_lines.forEach(function(element){
+            lines[element].isSelected = false;
+          });
+          selected_lines.clear();
+        }
+        selected_lines.add(lineid);
+        lines[lineid].isSelected = true;
+        if (curmax[0] != 0 && selected_lines.size == 1){
+          pressed_point = curmax[0];
+          lines[lineid].selectedPointIdx = pressed_point;
+        }
+        if (pressed_point == 0)
+        {
+          selected_lines.forEach(element => {
+            let points = lines[element].get_points();
+            lines[element].v1 = points[0].sub(mouse);
+            lines[element].v2 = points[1].sub(mouse);  
+          });
+        }
+      }
+    }else{
+      if (!keyIsDown(SHIFT)){
+        selected_lines.forEach(function(element){
+          lines[element].isSelected = false;
+        });
+        selected_lines.clear();
       }
     }
     redraw();
-  }
 }
+
 
 
 function onDelete(){
@@ -173,6 +183,10 @@ function mouseDragged(){
         }
       });
     }
+  }else{
+    selected_lines.forEach(function (idx){
+      lines[idx].move();
+    })  
   }
   redraw();
   show_point_coords();
@@ -215,7 +229,7 @@ function mouseMoved(){
 function onMouseReleased(){
   redraw();
   if (selected_lines.size == 1)
-    lines[selected_lines.values().next().value].selectedPointIdx = -1;
+    lines[selected_lines.values().next().value].selectedPointIdx = 0;
 }
 
 function draw() {
