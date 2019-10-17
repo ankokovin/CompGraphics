@@ -134,8 +134,28 @@ function onDelete(){
 }
 
 function mouseDragged(){
+  mouse = new vector3(mouseX, mouseY);
   if (selected_line != -1){
     lines[selected_line].move();
+    if (pressed_point > 0){
+      
+      lines.forEach(function(element, idx) {
+        let npoint = null;
+        if (idx != selected_line && element.p1.dist(mouse) < 10)
+        {
+          npoint = element.p1.copy();
+        }else if(idx != selected_line && element.p2.dist(mouse) < 10){
+          npoint = element.p2.copy();
+        }
+        if (npoint != null){
+          if (pressed_point == 1){
+            lines[selected_line].p1 = npoint;
+          }else{
+            lines[selected_line].p2 = npoint;
+          }
+        }
+      });
+    }
   }
   redraw();
   show_point_coords();
