@@ -124,12 +124,24 @@ function onMousePressed(){
           });
           selected_lines.clear();
         }
+        
         selected_lines.add(lineid);
         lines[lineid].isSelected = true;
         if (curmax[0] != 0 && selected_lines.size == 1){
           pressed_point = curmax[0];
           lines[lineid].selectedPointIdx = pressed_point;
         }
+        if (pressed_point != 0) {
+          selected_lines.forEach(function(element){
+            lines[element].isSelected = false;
+          });
+          selected_lines.clear();
+          selected_lines.add(lineid);
+          lines[lineid].isSelected = true;
+          if (keyIsDown(ALT)){
+            setupManualChange(selected_lines.values().next().value);
+          }
+        } else
         if (pressed_point == 0)
         {
           selected_lines.forEach(element => {
@@ -150,6 +162,11 @@ function onMousePressed(){
     redraw();
 }
 
+function setupManualChange(line){
+  console.log("setup manual change:")
+  console.log(line);
+  
+}
 
 
 function onDelete(){
