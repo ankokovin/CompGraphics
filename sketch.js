@@ -63,6 +63,12 @@ function setup() {
             createInput().id("modal-y")
           )
           .child(
+            createP('z')
+          )
+          .child(
+            createInput().id("modal-z")
+          )
+          .child(
             createButton().id("modal-done-bt")
           )
         )
@@ -201,6 +207,7 @@ function setupManualChange(line){
   let p = lines[line].selectedPointIdx == 1 ? lines[line].p1 : lines[line].p2;
   $("#modal-x").val(p.x);
   $("#modal-y").val(p.y);
+  $("#modal-z").val(p.z);
   $('#coord-change-modal').modal('show');
   $('#modal-done-bt').click(
     function(){
@@ -210,12 +217,15 @@ function setupManualChange(line){
   $('#coord-change-modal').on('hide.bs.modal',function(){
     let x = int($("#modal-x").val());
     let y = int($("#modal-y").val());
+    let z = int($('#modal-z').val());
     if (lines[line].selectedPointIdx == 1){
       lines[line].p1.x = x;
       lines[line].p1.y = y;
+      lines[line].p1.z = z;
     }else{
       lines[line].p2.x = x;
       lines[line].p2.y = y;
+      lines[line].p2.z = z;
     }
     selected_lines.add(line)
     lines[line].isSelected = true;
@@ -238,6 +248,7 @@ function onDelete(){
     redraw();
   }
 }
+
 
 function mouseDragged(){
   mouse = mouseVector();
@@ -295,7 +306,7 @@ function show_point_coords(){
     p.norm_op();
     stroke('black');
     fill('black');
-    text('('+p.x+';'+p.y+')',mouse.x+ width/2, - mouse.y + height/2);
+    text('('+p.x+';'+p.y+';'+p.z+';'+p.op+')',mouse.x+ width/2, - mouse.y + height/2);
   }
 }
 const axes_step = 50;
@@ -328,8 +339,10 @@ function mouseMoved(){
 
 function onMouseReleased(){
   redraw();
-  if (selected_lines.size == 1)
+  if (selected_lines.size == 1){
     lines[selected_lines.values().next().value].selectedPointIdx = 0;
+    pressed_point = 0;
+  }
 }
 
 function draw() {

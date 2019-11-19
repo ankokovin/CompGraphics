@@ -59,11 +59,15 @@ class Line{
     mouse = mouseVector();
     if(selectedPointIdx == 1)
      {
-       this.p1 = mouse;
+       this.p1.norm_op();
+       this.p1.x = mouse.x;
+       this.p1.y = mouse.y;
      }
     if (selectedPointIdx == 2)
     {
-      this.p2 = mouse;
+      this.p2.norm_op();
+      this.p2.x = mouse.x;
+      this.p2.y = mouse.y;
     }
   }
 
@@ -97,7 +101,15 @@ class Line{
   }
   
   get_params(){
-    let result = this.p1.cross(this.p2);
+    let sub = this.p1.sub(this.p2);
+    let result = {
+      'l' : sub.x,
+      'n' : sub.y,
+      'm' : sub.z,
+      'x0': this.p1.x,
+      'y0': this.p1.y,
+      'z0': this.p1.z
+    }
     return result;
   }
 
@@ -108,12 +120,14 @@ class Line{
     mid.mult(0.5);
     mid.norm_op();
     let params = this.get_params();
-    let div = gcd(abs(params.x), gcd(abs(params.y), abs(params.op)));
-    params.div_full(div);
-    text(
-      '('+params.x+';'+params.y+';'+params.op+')',
-      mid.x+ width/2, - mid.y+ height/2);
-
+    let str =  
+      '(x'+(params.x0<0 ? '+' + (-params.x0) : '-' + (params.x0))+')/'+(params.l < 0?'('+params.l+')':params.l) +
+      '=(y'+(params.y0<0 ? '+' + (-params.y0) : '-' + (params.y0))+')/'+(params.n < 0?'('+params.n+')':params.n) +
+       '=(z'+(params.z0<0 ? '+' + (-params.z0) : '-' + (params.z0))+')/'+(params.m < 0?'('+params.m+')':params.m);
+    let sz = str.length;
+    let mvx = sz*3;
+    let mvy = 5;
+    text(str, (mid.x - mvx) + width/2, -(mid.y - mvy)+ height/2,(mid.x + mvx) + width/2, -(mid.y + mvy)+ height/2 );
   }
 
 }
