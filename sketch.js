@@ -102,6 +102,11 @@ function setup() {
           .child(rembt)
           .child(showaxesbt)
       )
+      .child(createDiv().class("toolbox-part")
+          .child(createP("Для множенственного выделения нажмите Shift"))
+          .child(createP("Для ручного изменения координат нажмите Alt"))
+          
+      )
     );
 
   redraw();
@@ -202,8 +207,10 @@ function onMousePressed(){
 
 
 
+var lineOnManualChange = null;
 
 function setupManualChange(line){
+  lineOnManualChange = line;
   selected_lines.forEach(function(element){
     lines[element].isSelected = false;
   });
@@ -222,20 +229,22 @@ function setupManualChange(line){
     }
   );
   $('#coord-change-modal').on('hide.bs.modal',function(){
+    console.log(lineOnManualChange);
+    console.log(lines);
     let x = int($("#modal-x").val());
     let y = int($("#modal-y").val());
     let z = int($('#modal-z').val());
-    if (lines[line].selectedPointIdx == 1){
-      lines[line].p1.x = x;
-      lines[line].p1.y = y;
-      lines[line].p1.z = z;
+    if (lines[lineOnManualChange].selectedPointIdx == 1){
+      lines[lineOnManualChange].p1.x = x;
+      lines[lineOnManualChange].p1.y = y;
+      lines[lineOnManualChange].p1.z = z;
     }else{
-      lines[line].p2.x = x;
-      lines[line].p2.y = y;
-      lines[line].p2.z = z;
+      lines[lineOnManualChange].p2.x = x;
+      lines[lineOnManualChange].p2.y = y;
+      lines[lineOnManualChange].p2.z = z;
     }
-    selected_lines.add(line)
-    lines[line].isSelected = true;
+    selected_lines.add(lineOnManualChange)
+    lines[lineOnManualChange].isSelected = true;
     redraw();
   })
 }
