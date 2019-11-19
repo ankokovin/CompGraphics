@@ -7,6 +7,8 @@ var pressed_point = -1;
 var v1 = null;
 var v2 = null;
 var do_show_axes = false;
+var changesForm = null;
+
 function setup() {
   width = max(windowWidth - 500, 400);
   height = 400;
@@ -43,6 +45,29 @@ function setup() {
   widthp = createP("Ширина"); 
 
   heightp = createP("Высота");
+  changesForm = createDiv().class('modal').attribute('role','dialog').id('coord-change-modal')
+    .child(
+      createDiv().class('modal-dialog').attribute('role','document').child(
+        createDiv().class('modal-content').child(
+          createDiv().class('modal-body')
+          .child(
+            createP('x')
+          )
+          .child(
+            createInput().id("modal-x")
+          )
+          .child(
+            createP('y')
+          )
+          .child(
+            createInput().id("modal-y")
+          )
+          .child(
+            createButton().id("modal-done-bt")
+          )
+        )
+      )
+    );
   createDiv().class("main-container")
     .child(
       createDiv().class("cv")
@@ -162,10 +187,40 @@ function onMousePressed(){
     redraw();
 }
 
+
+
+
 function setupManualChange(line){
+  selected_lines.forEach(function(element){
+    lines[element].isSelected = false;
+  });
+  selected_lines.clear();
   console.log("setup manual change:")
   console.log(line);
-  
+  console.log(lines[line])
+  let p = lines[line].selectedPointIdx == 1 ? lines[line].p1 : lines[line].p2;
+  $("#modal-x").val(p.x);
+  $("#modal-y").val(p.y);
+  $('#coord-change-modal').modal('show');
+  $('#modal-done-bt').click(
+    function(){
+      $('#coord-change-modal').modal('hide');
+    }
+  );
+  $('#coord-change-modal').on('hide.bs.modal',function(){
+    let x = int($("#modal-x").val());
+    let y = int($("#modal-y").val());
+    if (lines[line].selectedPointIdx == 1){
+      lines[line].p1.x = x;
+      lines[line].p1.y = y;
+    }else{
+      lines[line].p2.x = x;
+      lines[line].p2.y = y;
+    }
+    selected_lines.add(line)
+    lines[line].isSelected = true;
+    redraw();
+  })
 }
 
 
