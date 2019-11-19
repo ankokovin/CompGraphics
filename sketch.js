@@ -222,6 +222,7 @@ function show_point_coords(){
   if (mindist < 5){
     p.norm_op();
     stroke('black');
+    fill('black');
     text('('+p.x+';'+p.y+')',mouse.x+ width/2, - mouse.y + height/2);
   }
 }

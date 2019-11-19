@@ -103,6 +103,7 @@ class Line{
 
   showparams(){
     stroke('red');
+    fill('red');
     let mid = this.p1.add(this.p2);
     mid.mult(0.5);
     mid.norm_op();
