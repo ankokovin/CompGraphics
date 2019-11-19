@@ -48,7 +48,13 @@ function setup() {
   changesForm = createDiv().class('modal').attribute('role','dialog').id('coord-change-modal')
     .child(
       createDiv().class('modal-dialog').attribute('role','document').child(
-        createDiv().class('modal-content').child(
+        createDiv().class('modal-content')
+        .child(
+          createDiv().class('modal-header').child(
+            createP("Изменение координат")
+          )
+        )
+        .child(
           createDiv().class('modal-body')
           .child(
             createP('x')
@@ -68,8 +74,9 @@ function setup() {
           .child(
             createInput().id("modal-z")
           )
+          .child(createP())
           .child(
-            createButton().id("modal-done-bt")
+            createButton("Изменить").id("modal-done-bt")
           )
         )
       )
