@@ -12,6 +12,9 @@ class matrix4{
             }
         }
     }
+    set_val(x, y, nval){
+        this.m[x][y] = nval;
+    }
     get_val(x, y){
         return this.m[x][y];
     }
