@@ -30,6 +30,9 @@ html, body {
   .main-container{
     display: grid;
     grid-template: 
-      "tb" 25vh
+      "tb" 180px
       "cv"  auto;
+  }
+  .matrix-input{
+    width:35px;
   }
