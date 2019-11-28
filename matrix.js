@@ -7,8 +7,8 @@ class matrix4{
             for(let j=0; j<4;++j){
                 let idx = 4*i+j;
                 if (idx <ar.length){
-                    m[i].push(ar[idx]);
-                }else m[i].push(0);
+                    this.m[i].push(ar[idx]);
+                }else this.m[i].push(0);
             }
         }
     }
