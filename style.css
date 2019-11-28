@@ -30,6 +30,6 @@ html, body {
   .main-container{
     display: grid;
     grid-template: 
-      "tb" 20vh
+      "tb" 25vh
       "cv"  auto;
   }
