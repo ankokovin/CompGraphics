@@ -9,6 +9,15 @@ var v2 = null;
 var do_show_axes = false;
 var changesForm = null;
 
+var curMatrix = new matrix4([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])
+
+function get_matrix_modifier(x, y){
+  return function(){
+    curMatrix.set_val(x,y,float(this.value()));
+  }
+}
+
+
 function setup() {
   width = max(windowWidth - 500, 400);
   height = 400;
@@ -45,6 +54,26 @@ function setup() {
   widthp = createP("Ширина"); 
 
   heightp = createP("Высота");
+
+  let matrix = createDiv().class("toolbox-part");
+  for (let i=0; i< 4; ++i){
+    let row = createDiv().class("matrix-row");
+    for (let j=0; j< 4; ++j){
+      row.child(
+        createInput(curMatrix.get_val(i,j))
+        .class("matrix-input")
+        .input(get_matrix_modifier(i,j))
+        );
+    }
+    matrix.child(row);
+  }
+  matrix.child(
+    createButton("Применить")
+    .mousePressed(function(){
+      alert("Здесь будет применение матрицы")
+    })
+  ); 
+
   changesForm = createDiv().class('modal').attribute('role','dialog').id('coord-change-modal')
     .child(
       createDiv().class('modal-dialog').attribute('role','document').child(
@@ -102,6 +131,7 @@ function setup() {
           .child(rembt)
           .child(showaxesbt)
       )
+      .child(matrix)
       .child(createDiv().class("toolbox-part")
           .child(createP("Для множенственного выделения нажмите Shift"))
           .child(createP("Для ручного изменения координат нажмите Alt"))
