@@ -94,6 +94,27 @@ class vector3{
     copy(){
         return new vector3(this.x, this.y,this.z, this.op);
     }
+
+    apply_matrix(matrix){
+        let x =   this.x    *matrix.get_val(0,0)
+                + this.y    *matrix.get_val(0,1)
+                + this.z    *matrix.get_val(0,2)
+                + this.op   *matrix.get_val(0,3);
+        let y =   this.x    *matrix.get_val(1,0)
+                + this.y    *matrix.get_val(1,1)
+                + this.z    *matrix.get_val(1,2)
+                + this.op   *matrix.get_val(1,3);
+        let z =   this.x    *matrix.get_val(2,0)
+                + this.y    *matrix.get_val(2,1)
+                + this.z    *matrix.get_val(2,2)
+                + this.op   *matrix.get_val(2,3);
+        let op =  this.x    *matrix.get_val(3,0)
+                + this.y    *matrix.get_val(3,1)
+                + this.z    *matrix.get_val(3,2)
+                + this.op   *matrix.get_val(3,3);
+        return new vector3(x,y,z,op);
+    }
+
 }
 
 function mouseVector(){
