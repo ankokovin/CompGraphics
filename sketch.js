@@ -13,7 +13,11 @@ var curMatrix = new matrix4([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])
 
 function get_matrix_modifier(x, y){
   return function(){
-    curMatrix.set_val(x,y,float(this.value()));
+    let nval = 0;
+    if (this.value().length>0)
+      nval = float(this.value());
+      
+    curMatrix.set_val(x,y,nval);
   }
 }
 
@@ -69,9 +73,7 @@ function setup() {
   }
   matrix.child(
     createButton("Применить")
-    .mousePressed(function(){
-      alert("Здесь будет применение матрицы")
-    })
+    .mousePressed(apply_cur_matrix)
   ); 
 
   changesForm = createDiv().class('modal').attribute('role','dialog').id('coord-change-modal')
@@ -139,6 +141,15 @@ function setup() {
       )
     );
 
+  redraw();
+}
+
+
+function apply_cur_matrix(){
+  selected_lines.forEach(lineIdx => {
+    lines[lineIdx].p1 = lines[lineIdx].p1.apply_matrix(curMatrix);
+    lines[lineIdx].p2 = lines[lineIdx].p2.apply_matrix(curMatrix);
+  });
   redraw();
 }
 
