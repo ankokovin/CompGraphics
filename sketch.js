@@ -32,7 +32,6 @@ function setup() {
   cv = createCanvas(width, height);
   cv.mousePressed(onMousePressed);
   cv.mouseReleased(onMouseReleased);
-  noLoop();
   
   addbt = createButton("Добавить линию");
   addbt.mousePressed(generateLine);
@@ -148,8 +147,6 @@ function setup() {
           
       )
     );
-
-  redraw();
 }
 
 function start_morphing(){
@@ -172,21 +169,18 @@ function apply_cur_matrix(){
     lines[lineIdx].p1 = lines[lineIdx].p1.apply_matrix(curMatrix);
     lines[lineIdx].p2 = lines[lineIdx].p2.apply_matrix(curMatrix);
   });
-  redraw();
 }
 
 function updateSize(){
   width = int(widthsl.value());
   height = int(heightsl.value());
   resizeCanvas(width, height);
-  redraw();
 }
 
 function generateLine(){
   p1 = new vector3(int(random(width)) - width/2, - int(random(height)) + height/2);
   p2 = new vector3(int(random(width)) - width/2, - int(random(height)) + height/2);
   lines.push(new Line(p1,p2));
-  redraw();
 }
 
 function onMousePressed(){
@@ -253,7 +247,6 @@ function onMousePressed(){
         selected_lines.clear();
       }
     }
-    redraw();
 }
 
 
@@ -296,7 +289,6 @@ function setupManualChange(line){
     }
     selected_lines.add(lineOnManualChange)
     lines[lineOnManualChange].isSelected = true;
-    redraw();
   })
 }
 
@@ -312,7 +304,6 @@ function onDelete(){
     }
     lines = nlines;
     selected_lines.clear();
-    redraw();
   }
 }
 
@@ -346,7 +337,6 @@ function mouseDragged(){
       lines[idx].move();
     })  
   }
-  redraw();
   show_point_coords();
 }
 
@@ -397,7 +387,6 @@ function show_axes(){
 }
 
 function mouseMoved(){
-  redraw();
   show_point_coords();
 }
 
@@ -405,7 +394,6 @@ function mouseMoved(){
 
 
 function onMouseReleased(){
-  redraw();
   if (selected_lines.size == 1){
     lines[selected_lines.values().next().value].selectedPointIdx = 0;
     pressed_point = 0;
