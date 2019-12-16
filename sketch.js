@@ -9,6 +9,8 @@ var v1 = null;
 var v2 = null;
 var do_show_axes = false;
 var changesForm = null;
+var start_list_html = null;
+var end_list_html = null;
 
 var curMatrix = new matrix4([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])
 
@@ -115,12 +117,37 @@ function setup() {
       )
     );
 
-  let morphingModal = createDiv().class('modal').attribute('role','dialog').id('morphing-modal')
+    start_list_html = createDiv('Здесь будет список элементов начальной группы');
+    end_list_html = createDiv('Здесь будет список элементов конечной группы');
+    
+
+  createDiv().class('modal').attribute('role','dialog').id('morphing-modal').child(
+
+    createDiv().class('modal-dialog').attribute('role','document').child(
+      createDiv().class('modal-content')
+    .child(
+      createDiv().class('modal-header').child(
+        createP("Морфинг")
+        )
+    )
+    .child(
+      createDiv().class('modal-body')
+      .child(start_list_html)
+      .child(end_list_html)
+      .child(
+        createInput(0,'numeric')
+      )
+      .child(
+        createButton("Применить").id("modal-done-bt")
+        )
+    )
+    )
+  );
   
-  let morphingButton = createButton('Начать морфинг').mousePressed(start_morphing);
+    let morphingButton = createButton('Начать морфинг').mousePressed(start_morphing);
 
   createDiv().class("main-container")
-    .child(
+  .child(
       createDiv().class("cv")
       .child(cv)
     )
@@ -152,18 +179,20 @@ function setup() {
 
 function start_morphing(){
   MorphingGroupSelection = 1;
-  alert("Выберите начальную группу. Alt для продолжения.");
+  alert("Выберите начальную группу. CTRL для продолжения.");
 }
 
 function first_group_selected(){
-  stashed_selected_lines = selected_lines.Copy();
+  stashed_selected_lines = new Set(selected_lines);
   unselect();
   MorphingGroupSelection = 2;
-  alert("Выберите конечную группу. Alt для продолжения.");
+  alert("Выберите конечную группу. CTRL для продолжения.");
 }
 
 function open_morphing_modal(){
   MorphingGroupSelection = 3;
+  start_list_html = createDiv('Здесь будет список элементов начальной группы');
+  end_list_html = createDiv('Здесь будет список элементов конечной группы');
   $('#morphing-modal').show();
 }
 
@@ -247,6 +276,7 @@ function onMousePressed(){
         unselect();
       }
     }
+    redraw();
 }
 
 function unselect(){
@@ -254,7 +284,7 @@ function unselect(){
     lines[element].isSelected = false;
   });
   selected_lines.clear();
-
+  redraw();
 }
 
 
@@ -345,7 +375,7 @@ function mouseDragged(){
       lines[idx].move();
     })  
   }
-  show_point_coords();
+  
 }
 
 function show_point_coords(){
@@ -434,7 +464,8 @@ function draw() {
     if (selected_lines.has(i))
       lines[i].showparams();
   }  
-  if (keyIsDown(ALT)){
+  show_point_coords();
+  if (keyIsDown(CONTROL)){
     if (MorphingGroupSelection == 1){
       first_group_selected();
     }else if (MorphingGroupSelection == 2){
