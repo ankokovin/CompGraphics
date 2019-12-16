@@ -3,6 +3,7 @@ var height;
 var lines;
 
 var selected_lines = new Set();
+var stashed_selected_lines;
 var pressed_point = -1;
 var v1 = null;
 var v2 = null;
@@ -155,6 +156,8 @@ function start_morphing(){
 }
 
 function first_group_selected(){
+  stashed_selected_lines = selected_lines.Copy();
+  unselect();
   MorphingGroupSelection = 2;
   alert("Выберите конечную группу. Alt для продолжения.");
 }
@@ -226,7 +229,7 @@ function onMousePressed(){
           selected_lines.clear();
           selected_lines.add(lineid);
           lines[lineid].isSelected = true;
-          if (keyIsDown(ALT)){
+          if (keyIsDown(ALT) && MorphingGroupSelection == -1){
             setupManualChange(selected_lines.values().next().value);
           }
         } else
@@ -241,12 +244,17 @@ function onMousePressed(){
       }
     }else{
       if (!keyIsDown(SHIFT)){
-        selected_lines.forEach(function(element){
-          lines[element].isSelected = false;
-        });
-        selected_lines.clear();
+        unselect();
       }
     }
+}
+
+function unselect(){
+  selected_lines.forEach(function(element){
+    lines[element].isSelected = false;
+  });
+  selected_lines.clear();
+
 }
 
 
@@ -426,4 +434,11 @@ function draw() {
     if (selected_lines.has(i))
       lines[i].showparams();
   }  
+  if (keyIsDown(ALT)){
+    if (MorphingGroupSelection == 1){
+      first_group_selected();
+    }else if (MorphingGroupSelection == 2){
+      open_morphing_modal();
+    }
+  }
 }
