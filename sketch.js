@@ -11,6 +11,8 @@ var changesForm = null;
 
 var curMatrix = new matrix4([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])
 
+var MorphingGroupSelection = -1;
+
 function get_matrix_modifier(x, y){
   return function(){
     let nval = 0;
@@ -112,6 +114,11 @@ function setup() {
         )
       )
     );
+
+  let morphingModal = createDiv().class('modal').attribute('role','dialog').id('morphing-modal')
+  
+  let morphingButton = createButton('Начать морфинг').mousePressed(start_morphing);
+
   createDiv().class("main-container")
     .child(
       createDiv().class("cv")
@@ -132,6 +139,7 @@ function setup() {
           .child(addbt)
           .child(rembt)
           .child(showaxesbt)
+          .child(morphingButton)
       )
       .child(matrix)
       .child(createDiv().class("toolbox-part")
@@ -142,6 +150,10 @@ function setup() {
     );
 
   redraw();
+}
+
+function start_morphing(){
+  alert("Start morphing");
 }
 
 
@@ -159,18 +171,6 @@ function updateSize(){
   resizeCanvas(width, height);
   redraw();
 }
-
-function place(){
-  //cv.position(25, 90);
-  //widthp.position(25,0);
-  //widthsl.position(90, 13);
-  //heightp.position(25, 25);
-  //heightsl.position(90, 38);
-  //resizebt.position(25, 63);
-  //addbt.position(width+35, 90);
-  //rembt.position(width+35, 120);
-}
-
 
 function generateLine(){
   p1 = new vector3(int(random(width)) - width/2, - int(random(height)) + height/2);
