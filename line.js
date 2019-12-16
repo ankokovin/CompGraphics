@@ -101,15 +101,11 @@ class Line{
   }
   
   get_params(){
-    let sub = this.p1.sub(this.p2);
-    let result = {
-      'l' : sub.x,
-      'n' : sub.y,
-      'm' : sub.z,
-      'x0': this.p1.x,
-      'y0': this.p1.y,
-      'z0': this.p1.z
-    }
+    let lhs = this.p1.copy();
+    let rhs = this.p2.copy();
+    lhs.z = 1;
+    rhs.z = 1;
+    let result = lhs.cross(rhs);
     return result;
   }
 
@@ -120,10 +116,9 @@ class Line{
     mid.mult(0.5);
     mid.norm_op();
     let params = this.get_params();
-    let str =  
-      '(x'+(params.x0<0 ? '+' + (-params.x0) : '-' + (params.x0))+')/'+(params.l < 0?'('+params.l+')':params.l) +
-      '=(y'+(params.y0<0 ? '+' + (-params.y0) : '-' + (params.y0))+')/'+(params.n < 0?'('+params.n+')':params.n) +
-       '=(z'+(params.z0<0 ? '+' + (-params.z0) : '-' + (params.z0))+')/'+(params.m < 0?'('+params.m+')':params.m);
+    let div = gcd(abs(params.x), gcd(abs(params.y), abs(params.op)));
+    params.div_full(div);
+    let str = '('+params.x+';'+params.y+';'+params.op+')';  
     let sz = str.length;
     let mvx = sz*3;
     let mvy = 5;
