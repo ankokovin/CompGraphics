@@ -96,23 +96,16 @@ class vector3{
     }
 
     apply_matrix(matrix){
-        let x =   this.x    *matrix.get_val(0,0)
-                + this.y    *matrix.get_val(0,1)
-                + this.z    *matrix.get_val(0,2)
-                + this.op   *matrix.get_val(0,3);
-        let y =   this.x    *matrix.get_val(1,0)
-                + this.y    *matrix.get_val(1,1)
-                + this.z    *matrix.get_val(1,2)
-                + this.op   *matrix.get_val(1,3);
-        let z =   this.x    *matrix.get_val(2,0)
-                + this.y    *matrix.get_val(2,1)
-                + this.z    *matrix.get_val(2,2)
-                + this.op   *matrix.get_val(2,3);
-        let op =  this.x    *matrix.get_val(3,0)
-                + this.y    *matrix.get_val(3,1)
-                + this.z    *matrix.get_val(3,2)
-                + this.op   *matrix.get_val(3,3);
-        return new vector3(x,y,z,op);
+        let ar = []
+        for(let i=0;i<4;++i){
+            let t = 0;
+            t +=   this.x*matrix.get_val(0,i);
+            t +=   this.y*matrix.get_val(1,i);
+            t +=   this.z*matrix.get_val(2,i);
+            t +=   this.op*matrix.get_val(3,i);
+            ar.push(t);
+        }
+        return new vector3(ar[0],ar[1],ar[2],ar[3]);
     }
 
 }
