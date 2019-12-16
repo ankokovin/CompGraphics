@@ -153,9 +153,19 @@ function setup() {
 }
 
 function start_morphing(){
-  alert("Start morphing");
+  MorphingGroupSelection = 1;
+  alert("Выберите начальную группу. Alt для продолжения.");
 }
 
+function first_group_selected(){
+  MorphingGroupSelection = 2;
+  alert("Выберите конечную группу. Alt для продолжения.");
+}
+
+function open_morphing_modal(){
+  MorphingGroupSelection = 3;
+  $('#morphing-modal').show();
+}
 
 function apply_cur_matrix(){
   selected_lines.forEach(lineIdx => {
