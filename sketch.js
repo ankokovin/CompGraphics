@@ -195,6 +195,7 @@ var maker_second_line;
 var make_operation = null;
 
 function start_median(){
+  selected_lines.clear();
   make_operation = 'median';
   alert("Построение медианы.Выберите начальную точку или отрезок");
 }
@@ -205,6 +206,19 @@ function continue_median(){
 
 function make_median(){
   alert("Построение медианы");
+  if (maker_second_line == null){
+    let end = maker_first_line.p1.add(maker_first_line.p2);
+    end.mult(0.5);
+    let line = new Line(maker_selected_point, end);
+    lines.push(line);
+  }else{
+    let start = maker_first_line.p1.add(maker_first_line.p2);
+    start.mult(0.5);
+    let end = maker_second_line.p1.add(maker_second_line.p2);
+    end.mult(0.5);
+    let line = new Line(start,end);
+    lines.push(line);
+  }
   make_operation = null;
   maker_selected_point = null;
   maker_first_line = null;
@@ -212,6 +226,7 @@ function make_median(){
 }
 
 function start_perpendicular(){
+  selected_lines.clear();
   make_operation = 'perpendicular';
   alert("Построение перпендикуляра.Выберите начальную точку.");
 }
@@ -230,6 +245,7 @@ function make_perpendicular(){
 }
 
 function start_angle_bisector(){
+  selected_lines.clear();
   make_operation = 'bisector';
   alert("Построение биссекртисы.Выберите первый отрезок");
 }

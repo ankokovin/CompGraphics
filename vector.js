@@ -1,10 +1,10 @@
 class vector3{
 
     constructor(x, y, z, op){
-        this.x = int(x);
-        this.y = int(y);
-        this.z = (z === undefined)?0:int(z);
-        this.op = (op === undefined)?1:int(op); 
+        this.x = float(x);
+        this.y = float(y);
+        this.z = (z === undefined)?0:float(z);
+        this.op = (op === undefined)?1:float(op); 
         this.mouse = false;
     }
 
