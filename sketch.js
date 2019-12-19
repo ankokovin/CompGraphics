@@ -182,9 +182,47 @@ function setup() {
       .child(createDiv().class("toolbox-part")
           .child(createP("Для множенственного выделения нажмите Shift"))
           .child(createP("Для ручного изменения координат нажмите Alt"))
-          
+          .child(createButton("Построение медианы"))
+          .child(createButton("Построение биссектрисы"))
+          .child(createButton("Построение перпендикуляра"))
       )
     );
+}
+
+function start_median(){
+  alert("Построение медианы.Выберите начальную точку.");
+}
+
+function continue_median(){
+  alert("Выберите отрезок, к которому провести медиану");
+}
+
+function make_median(){
+  alert("Построение медианы");
+}
+
+function start_perpendicular(){
+  alert("Построение перпендикуляра.Выберите начальную точку.");
+}
+
+function continue_perpendicular(){
+  alert("Выберите отрезок, к которому провести перпендикуляр");
+}
+
+function make_perpendicular(){
+  alert("Построение перпендикуляра");
+}
+
+function start_angle_bisector(){
+  alert("Построение биссекртисы.Выберите первый отрезок");
+}
+
+function continue_bisector(){
+  alert('Выберите второй отрезок');
+}
+
+function make_bisector(){
+  alert("Построение биссектрисы");
 }
 
 function start_morphing(){
