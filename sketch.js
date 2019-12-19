@@ -25,7 +25,7 @@ function get_matrix_modifier(x, y){
     curMatrix.set_val(x,y,nval);
   }
 }
-
+var t_slider;
 
 function setup() {
   width = max(windowWidth - 500, 400);
@@ -120,7 +120,14 @@ function setup() {
     start_list_html = createElement('ul').id("start-list");
     end_list_html  = createElement('ul').id('end-list');
     
-
+    t_slider = createSlider(0,1,0,0.1);
+    let morph_done_bt = createButton("Применить").id("modal-done-bt").mousePressed(
+      function()
+      {
+        morph();
+        $('#morphing-modal').hide();
+      }
+  );
   createDiv().class('modal').attribute('role','dialog').id('morphing-modal').child(
 
     createDiv().class('modal-dialog').attribute('role','document').child(
@@ -137,10 +144,10 @@ function setup() {
         .child(end_list_html)
       )
       .child(
-        createSlider(0,1,0,0.1)
+        t_slider
       )
       .child(
-        createButton("Применить").id("modal-done-bt")
+        morph_done_bt
         )
     )
     )
@@ -252,6 +259,14 @@ function open_morphing_modal(){
   });
   unselect();
   $('#morphing-modal').show();
+ 
+}
+
+function morph(){
+  let t = t_slider.value();
+  console.log(t);
+  console.log(start_group_order);
+  console.log(end_group_order)
 }
 
 function apply_cur_matrix(){
