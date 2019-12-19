@@ -46,6 +46,7 @@ function setup() {
   showaxesbt.mousePressed(()=>{
     do_show_axes = !do_show_axes;
     redraw();
+    MorphingGroupSelection = -1;
   });
 
 
@@ -264,9 +265,62 @@ function open_morphing_modal(){
 
 function morph(){
   let t = t_slider.value();
-  console.log(t);
-  console.log(start_group_order);
-  console.log(end_group_order)
+  let start_lines = {};
+  for (let index = 0; index < start_group_order.length; index++) {
+    const tup = start_group_order[index];
+    if (!(tup[0] in start_lines)){
+      start_lines[tup[0]] = lines[tup[0]];
+    }
+  }
+  let end_lines = {};
+  for (let index = 0; index < end_group_order.length; index++) {
+    const tup = end_group_order[index];
+    if (!(tup[0] in end_lines)){
+      end_lines[tup[0]] = lines[tup[0]];
+    }
+  }
+  let n_lines = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (!(i in start_lines || i in end_lines)){
+      n_lines.push(lines[i]);
+    }
+  }
+  lines = n_lines;
+  let order = [];
+  for (let index = 0; index < start_group_order.length; index++) {
+    order.push(index);
+  }
+  order.sort(function(a,b){
+    if (start_group_order[a][0] < start_group_order[b][0]) return -1;
+    if (start_group_order[a][0] > start_group_order[b][0]) return 1;
+    if (start_group_order[a][1] < start_group_order[b][1]) return -1;
+    if (start_group_order[a][1] > start_group_order[b][1]) return 1;
+    return 0;
+  });
+  for (let index = 0; index < order.length; index+=2) {
+    const first_start = start_lines[start_group_order[order[index]][0]].p1;
+    const second_start = start_lines[start_group_order[order[index+1]][0]].p2;
+    let tup_f = end_group_order[order[index]];
+    const first_end = tup_f[1] == 1 
+    ?
+    end_lines[tup_f[0]].p1
+    :
+    end_lines[tup_f[0]].p2;
+    let tup_s = end_group_order[order[index+1]];
+    const second_end = tup_s[1] == 1 
+    ?
+    end_lines[tup_s[0]].p1
+    :
+    end_lines[tup_s[0]].p2;
+    let first_vec = first_end.sub(first_start);
+    first_vec.mult(t);
+    let second_vec = second_end.sub(second_start);
+    second_vec.mult(t);
+    let p1 = first_start.add(first_vec);
+    let p2 = second_start.add(second_vec);
+    let res_line = new Line(p1,p2);
+    lines.push(res_line);
+ }
 }
 
 function apply_cur_matrix(){
