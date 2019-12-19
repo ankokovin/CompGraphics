@@ -117,8 +117,8 @@ function setup() {
       )
     );
 
-    start_list_html = createDiv('Если вы это видете, то что-то пошло не так');
-    end_list_html = createDiv('Если вы это видете, то что-то пошло не так');
+    start_list_html = createElement('ul').id("start-list");
+    end_list_html  = createElement('ul').id('end-list');
     
 
   createDiv().class('modal').attribute('role','dialog').id('morphing-modal').child(
@@ -180,21 +180,77 @@ function setup() {
 }
 
 function start_morphing(){
+  onMouseReleased();
   MorphingGroupSelection = 1;
   alert("Выберите начальную группу. CTRL для продолжения.");
 }
 
 function first_group_selected(){
+  onMouseReleased();
   stashed_selected_lines = new Set(selected_lines);
   unselect();
   MorphingGroupSelection = 2;
   alert("Выберите конечную группу. CTRL для продолжения.");
 }
-
+var start_group_order;
 function open_morphing_modal(){
+  onMouseReleased();
   MorphingGroupSelection = 3;
-  start_list_html.html('Здесь будет список элементов начальной группы');
-  end_list_html.html('Здесь будет список элементов конечной группы');
+  start_list_html.html('');
+  stashed_selected_lines.forEach(idx => {
+    let line = lines[idx];
+    start_list_html
+      .child(
+        createElement('li','['+idx+','+1+"]:"+line.p1.x+";"+line.p1.y+";"+line.p1.z+";"+line.p1.op)
+      )
+      .child(
+        createElement('li','['+idx+','+2+"]:"+line.p2.x+";"+line.p2.y+";"+line.p2.z+";"+line.p2.op)
+      );
+    
+  });
+  end_list_html.html('');
+  selected_lines.forEach(idx => {
+    let line = lines[idx];
+    end_list_html
+      .child(
+        createElement('li','['+idx+','+1+"]:"+line.p1.x+";"+line.p1.y+";"+line.p1.z+";"+line.p1.op)
+      )
+      .child(
+        createElement('li','['+idx+','+2+"]:"+line.p2.x+";"+line.p2.y+";"+line.p2.z+";"+line.p2.op)
+      );
+    
+  });
+  function to_tuple(str){
+    let substr = str.substring(0,str.indexOf(':'));
+    return JSON.parse(substr);
+  }
+  $(function  () {
+    var start_list_group = $("#start-list").sortable({
+      serialize: function (parent, children, isContainer) {
+        return isContainer ? children : [parent.text()];
+      },
+      onDrop: function ($item, container, _super) {
+        
+        start_group_order = 
+        start_list_group.sortable("serialize").get().map(to_tuple);
+        _super($item, container);
+      }
+    });
+    start_group_order = start_list_group.sortable("serialize").get().map(to_tuple);
+    var end_list_group = $("#end-list").sortable({
+      serialize: function (parent, children, isContainer) {
+        return isContainer ? children : [parent.text()];
+      },
+      onDrop: function ($item, container, _super) {
+        
+        end_group_order = 
+        end_list_group.sortable("serialize").get().map(to_tuple);
+        _super($item, container);
+      }
+    });
+    end_group_order = end_list_group.sortable("serialize").get().map(to_tuple);
+  });
+  unselect();
   $('#morphing-modal').show();
 }
 
