@@ -182,15 +182,21 @@ function setup() {
       .child(createDiv().class("toolbox-part")
           .child(createP("Для множенственного выделения нажмите Shift"))
           .child(createP("Для ручного изменения координат нажмите Alt"))
-          .child(createButton("Построение медианы"))
-          .child(createButton("Построение биссектрисы"))
-          .child(createButton("Построение перпендикуляра"))
+          .child(createButton("Построение медианы").mousePressed(start_median))
+          .child(createButton("Построение биссектрисы").mousePressed(start_angle_bisector))
+          .child(createButton("Построение перпендикуляра").mousePressed(start_perpendicular))
       )
     );
 }
 
+var maker_selected_point;
+var maker_first_line;
+var maker_second_line;
+var make_operation = null;
+
 function start_median(){
-  alert("Построение медианы.Выберите начальную точку.");
+  make_operation = 'median';
+  alert("Построение медианы.Выберите начальную точку или отрезок");
 }
 
 function continue_median(){
@@ -199,9 +205,14 @@ function continue_median(){
 
 function make_median(){
   alert("Построение медианы");
+  make_operation = null;
+  maker_selected_point = null;
+  maker_first_line = null;
+  maker_second_line = null;
 }
 
 function start_perpendicular(){
+  make_operation = 'perpendicular';
   alert("Построение перпендикуляра.Выберите начальную точку.");
 }
 
@@ -211,9 +222,15 @@ function continue_perpendicular(){
 
 function make_perpendicular(){
   alert("Построение перпендикуляра");
+
+  make_operation = null;
+  maker_selected_point = null;
+  maker_first_line = null;
+  maker_second_line = null;
 }
 
 function start_angle_bisector(){
+  make_operation = 'bisector';
   alert("Построение биссекртисы.Выберите первый отрезок");
 }
 
@@ -223,6 +240,10 @@ function continue_bisector(){
 
 function make_bisector(){
   alert("Построение биссектрисы");
+  make_operation = null;
+  maker_selected_point = null;
+  maker_first_line = null;
+  maker_second_line = null;
 }
 
 function start_morphing(){
@@ -382,6 +403,16 @@ function generateLine(){
 
 function onMousePressed(){
   let mouse = mouseVector();
+  if (make_operation == 'median' && !maker_selected_point && !maker_first_line){
+    maker_selected_point = mouse;
+    continue_median();
+    return;
+  }
+  if (make_operation == 'perpendicular' && !maker_selected_point){
+    maker_selected_point = mouse;
+    continue_perpendicular();
+    return;
+  }
     pressed_point = 0;
     var curmax = null;
     var curd = 0;
@@ -398,6 +429,39 @@ function onMousePressed(){
       }
     }
     if (curmax != null){
+      if (make_operation != null){
+        if (make_operation == 'bisector'){
+          if (maker_first_line == null){
+            maker_first_line = lines[lineid];
+            continue_bisector();
+            return;
+          }else{
+            maker_second_line = lines[lineid];
+            make_bisector();
+            return;
+          }
+        }else if (make_operation == 'median'){
+          if (maker_first_line == null){
+            maker_first_line = lines[lineid];
+            if (maker_selected_point == null){
+              continue_median();
+              return;
+            }else{
+              make_median();
+              return;
+            }
+          }else{
+            maker_second_line = lines[lineid];
+            make_median();
+            return;
+          }
+        }else if (make_operation == 'perpendicular'){
+            maker_first_line = lines[lineid];
+            make_perpendicular();
+            return;
+          }
+        
+      }
       if (keyIsDown(SHIFT) && selected_lines.has(lineid)){
         lines[lineid].isSelected = false;
         selected_lines.delete(lineid);
