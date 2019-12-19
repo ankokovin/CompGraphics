@@ -272,6 +272,61 @@ function continue_bisector(){
 
 function make_bisector(){
   alert("Построение биссектрисы");
+  let first_start = maker_first_line.p1.copy();
+  let first_end = maker_first_line.p2.copy();
+  let second_start = maker_second_line.p1.copy();
+  let second_end = maker_second_line.p2.copy();
+  first_start.z = 0;
+  first_end.z = 0;
+  second_start.z = 0;
+  second_end.z = 0;
+  let d1 = first_start.dist(second_start);
+  let d2 = first_start.dist(second_end);
+  let d3 = first_end.dist(second_start);
+  let d4 = first_end.dist(second_end);
+  if (d1 <= d2 && d1 <= d3 && d1 <= d4){
+  }else if (d2 <= d1 && d2 <= d3 && d2 <= d4){
+    [second_start, second_end] = [second_end, second_start];
+  }else if (d3 <= d1 && d3 <= d2 && d3 <= d4){
+    [first_end, first_start] = [first_start, first_end];
+  }else{
+    [second_start, second_end] = [second_end, second_start];
+    [first_end, first_start] = [first_start, first_end];  
+  }
+  let v1 = first_end.sub(first_start);
+  v1.norm();
+  let v2 =second_end.sub(second_start);
+  v2.norm();
+  
+  let m = v1.cross(v2);
+  if (m.z<0) [v1, v2] = [v2, v1];
+  let angle = Math.asin(m.mag());
+  
+  if (angle==0){
+    alert('Прямые совпадают или параллельны');
+  }else{
+    angle/=2.0;
+    let res = v2.apply_matrix(new matrix4([
+        Math.cos(angle),  -Math.sin(angle), 0, 0,
+        Math.sin(angle),  Math.cos(angle),  0, 0,
+        0,                0,                1, 0,
+        0,                0,                0, 1
+      ]));
+    
+    
+    let params_f = maker_first_line.get_params();
+    let params_s = maker_second_line.get_params();
+    let delta = params_f.x*params_s.y-params_f.y*params_s.x;
+    let x = ((-params_f.z)*params_s.y-params_f.y*(-params_s.z))/delta;
+    let y = (params_f.z*params_s.x-params_f.x*params_s.z)/delta;
+    let p1 = new vector3(x,y);
+    let magn = 40;
+    res.mult(magn);
+    
+    let line = new Line(p1.add(res),p1.sub(res));
+    lines.push(line);
+  }
+
   make_operation = null;
   maker_selected_point = null;
   maker_first_line = null;

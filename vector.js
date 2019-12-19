@@ -108,6 +108,13 @@ class vector3{
         return new vector3(ar[0],ar[1],ar[2],ar[3]);
     }
 
+    scalar(vect){
+        let lhs = this.copy();
+        let rhs = vect.copy();
+        lhs.norm_op();
+        rhs.norm_op();
+        return lhs.x*rhs.x + lhs.y*rhs.y + lhs.z*rhs.z;
+    }
 }
 
 function mouseVector(){

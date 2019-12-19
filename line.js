@@ -116,8 +116,6 @@ class Line{
     mid.mult(0.5);
     mid.norm_op();
     let params = this.get_params();
-    let div = gcd(abs(params.x), gcd(abs(params.y), abs(params.z)));
-    params.div_full(div);
     let str = '('+params.x+';'+params.y+';'+params.z+')';  
     let sz = str.length;
     let mvx = sz*3;
