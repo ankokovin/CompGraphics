@@ -7,7 +7,8 @@ var stashed_selected_lines;
 var pressed_point = -1;
 var v1 = null;
 var v2 = null;
-var do_show_axes = false;
+var show_global_axes = false;
+var show_local_axes = false;
 var changesForm = null;
 var start_list_html = null;
 var end_list_html = null;
@@ -42,12 +43,6 @@ function setup() {
   rembt = createButton("Удалить линию");
   rembt.mousePressed(onDelete);
 
-  showaxesbt = createButton("Показать оси координат");
-  showaxesbt.mousePressed(()=>{
-    do_show_axes = !do_show_axes;
-    redraw();
-    MorphingGroupSelection = -1;
-  });
 
 
   widthsl = createInput(width, 'number');
@@ -175,7 +170,7 @@ function setup() {
       .child(createDiv().class("toolbox-part")
           .child(addbt)
           .child(rembt)
-          .child(showaxesbt)
+         
           .child(morphingButton)
       )
       .child(matrix)
@@ -186,7 +181,27 @@ function setup() {
           .child(createButton("Построение биссектрисы").mousePressed(start_angle_bisector))
           .child(createButton("Построение перпендикуляра").mousePressed(start_perpendicular))
       )
+      .child(createDiv().class('toolbox-part')
+          .child(createButton("Показать оси координат").mousePressed(()=>{
+            show_global_axes = !show_global_axes;
+            redraw();
+            MorphingGroupSelection = -1;
+          }))
+          .child(createButton("Локальные оси координат").mousePressed(()=>{
+            show_local_axes = !show_local_axes;
+          }))
+          .child(createButton("Сохранить").mousePressed(save))
+          .child(createButton("Загрузить").mousePressed(load))
+      )
     );
+}
+
+function save(){
+
+}
+
+function load(){
+
 }
 
 var maker_selected_point;
@@ -756,7 +771,7 @@ function onMouseReleased(){
 
 function draw() {
   background(200);
-  if (do_show_axes)
+  if (show_global_axes)
     show_axes();
   for (let i=0; i<lines.length;++i)
   {
