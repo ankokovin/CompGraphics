@@ -190,18 +190,29 @@ function setup() {
           .child(createButton("Локальные оси координат").mousePressed(()=>{
             show_local_axes = !show_local_axes;
           }))
-          .child(createButton("Сохранить").mousePressed(save))
-          .child(createButton("Загрузить").mousePressed(load))
+          .child(createButton("Сохранить").mousePressed(m_save))
+          .child(createFileInput(load))
       )
     );
 }
 
-function save(){
-
+function m_save(){
+  let json = {
+    'LinesObjects':lines
+  };
+  console.log(json);
+  saveJSON(json,'sketch.json')
 }
 
-function load(){
-
+function load(file){
+  unselect();
+  lines = [];
+  json = JSON.parse(atob(file.data.substring('data:application/json;base64,'.length)));
+  json['LinesObjects'].forEach(element => {
+    let p1 = new vector3(element.p1.x,element.p1.y,element.p1.z,element.p1.op);
+    let p2 = new vector3(element.p2.x,element.p2.y,element.p2.z,element.p2.op);
+    lines.push(new Line(p1, p2));
+  });
 }
 
 var maker_selected_point;
