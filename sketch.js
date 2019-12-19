@@ -755,6 +755,26 @@ function show_axes(){
   }
 }
 
+function local_axes(){
+  if (mouseX<0||mouseX>width||mouseY<0||mouseY>height) return;
+  stroke("black");
+  fill("white");
+  line(width-10, mouseY-5,width,mouseY);
+  line(width-10, mouseY+5,width,mouseY);
+  line(0,mouseY,width,mouseY);
+  line(mouseX-5, 10, mouseX,0);
+  line(mouseX+5,10,mouseX,0);
+  line(mouseX,0,mouseX,height);
+  for(let i = Math.floor(width/axes_step)*axes_step ; i > -(width)+1; i-= axes_step){
+    line(i+mouseX, mouseY-5,i+mouseX, mouseY+5);
+    text(i, i+mouseX, mouseY);
+  }
+  for(let i = Math.floor((height)/axes_step - 1)*axes_step ; i > -(height)+1; i-= axes_step){
+    line(mouseX-5, mouseY + i, mouseX + 5, mouseY + i);
+    text(i, mouseX, mouseY + i);
+  }
+}
+
 function mouseMoved(){
   show_point_coords();
 }
@@ -773,6 +793,8 @@ function draw() {
   background(200);
   if (show_global_axes)
     show_axes();
+  if (show_local_axes)
+    local_axes(); 
   for (let i=0; i<lines.length;++i)
   {
       if (!selected_lines.has(i))
