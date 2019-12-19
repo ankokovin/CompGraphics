@@ -195,7 +195,7 @@ var maker_second_line;
 var make_operation = null;
 
 function start_median(){
-  selected_lines.clear();
+  unselect();
   make_operation = 'median';
   alert("Построение медианы.Выберите начальную точку или отрезок");
 }
@@ -226,7 +226,7 @@ function make_median(){
 }
 
 function start_perpendicular(){
-  selected_lines.clear();
+  unselect();
   make_operation = 'perpendicular';
   alert("Построение перпендикуляра.Выберите начальную точку.");
 }
@@ -237,6 +237,22 @@ function continue_perpendicular(){
 
 function make_perpendicular(){
   alert("Построение перпендикуляра");
+  let params = maker_first_line.get_params();
+  params.norm_op();
+  let c = params.y*maker_selected_point.x - params.x*maker_selected_point.y;
+  let y = params.y!=0&&params.x!=0?(params.y*params.z+params.x*c)/(-(params.x*params.x+params.y*params.y))
+  :(params.x!=0?maker_selected_point.y:0);
+  let x = params.x!=0?(params.y*y+params.z)/(-params.x):makert_selected_point.x;
+  let x1 = maker_first_line.p2.x - maker_first_line.p1.x;
+  let y1 = maker_first_line.p2.y - maker_first_line.p1.y;
+  let z1 = maker_first_line.p2.z - maker_first_line.p1.z;
+  let d = x1*x1+y1*y1;
+  x1/=d, y1/=d;
+  let t = x1 != 0 ? x/x1 : y/y1;
+  let z = maker_first_line.p1.z + t*z1;
+  let p2 = new vector3(x,y,z);
+  let line = new Line(maker_selected_point,p2);
+  lines.push(line);
 
   make_operation = null;
   maker_selected_point = null;
@@ -245,7 +261,7 @@ function make_perpendicular(){
 }
 
 function start_angle_bisector(){
-  selected_lines.clear();
+  unselect();
   make_operation = 'bisector';
   alert("Построение биссекртисы.Выберите первый отрезок");
 }
@@ -708,6 +724,10 @@ function draw() {
   for (let i = 0; i < lines.length; i++) {
     if (selected_lines.has(i))
       lines[i].showparams();
+  }
+  if (maker_selected_point){
+    stroke('green');
+    circle(maker_selected_point.x + width/2,  height/2 - maker_selected_point.y , 5)
   }  
   show_point_coords();
   if (keyIsDown(CONTROL)){
