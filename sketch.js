@@ -117,8 +117,8 @@ function setup() {
       )
     );
 
-    start_list_html = createDiv('Здесь будет список элементов начальной группы');
-    end_list_html = createDiv('Здесь будет список элементов конечной группы');
+    start_list_html = createDiv('Если вы это видете, то что-то пошло не так');
+    end_list_html = createDiv('Если вы это видете, то что-то пошло не так');
     
 
   createDiv().class('modal').attribute('role','dialog').id('morphing-modal').child(
@@ -132,10 +132,12 @@ function setup() {
     )
     .child(
       createDiv().class('modal-body')
-      .child(start_list_html)
-      .child(end_list_html)
+      .child(createDiv().style('display','flex')
+        .child(start_list_html)
+        .child(end_list_html)
+      )
       .child(
-        createInput(0,'numeric')
+        createSlider(0,1,0,0.1)
       )
       .child(
         createButton("Применить").id("modal-done-bt")
@@ -191,8 +193,8 @@ function first_group_selected(){
 
 function open_morphing_modal(){
   MorphingGroupSelection = 3;
-  start_list_html = createDiv('Здесь будет список элементов начальной группы');
-  end_list_html = createDiv('Здесь будет список элементов конечной группы');
+  start_list_html.html('Здесь будет список элементов начальной группы');
+  end_list_html.html('Здесь будет список элементов конечной группы');
   $('#morphing-modal').show();
 }
 
