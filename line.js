@@ -42,6 +42,8 @@ class Line{
       this.p2.norm_op();
       var a = mouse.sub(this.p1);
       var b = this.p2.sub(this.p1);
+      a.z = 0;
+      b.z = 0;
       var t = a.dot(b) / b.mag();
       var p = b;
       p.norm();
