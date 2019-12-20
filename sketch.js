@@ -377,7 +377,9 @@ function bis(first_line, second_line){
   let m = v1.cross(v2);
   if (m.z<0) [v1, v2] = [v2, v1];
   let angle = Math.asin(m.mag());
-  
+  let scalar = v1.scalar(v2);
+  if (scalar < 0)
+    angle = PI - angle;
   if (angle==0){
     alert('Прямые совпадают или параллельны');
   }else{
