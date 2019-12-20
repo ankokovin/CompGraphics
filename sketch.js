@@ -12,9 +12,9 @@ var show_local_axes = false;
 var changesForm = null;
 var start_list_html = null;
 var end_list_html = null;
-
+var groupList;
 var curMatrix = new matrix4([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1])
-
+var root;
 var MorphingGroupSelection = -1;
 
 function get_matrix_modifier(x, y){
@@ -32,7 +32,7 @@ function setup() {
   width = max(windowWidth - 500, 400);
   height = 400;
   lines = [];
-
+  root = new Group(null);
   cv = createCanvas(width, height);
   cv.mousePressed(onMousePressed);
   cv.mouseReleased(onMouseReleased);
@@ -155,6 +155,16 @@ function setup() {
   .child(
       createDiv().class("cv")
       .child(cv)
+      .child(
+        createDiv()
+        .child(
+          createP('Группы')
+        )
+        .child(
+          createButton('Сохранить группу').mousePressed(save_group)
+        )
+        .child(groupList=createDiv().id('group-list'))
+      )
     )
     .child(
       createDiv().class("toolbox")
@@ -196,9 +206,126 @@ function setup() {
     );
 }
 
+function load_group(){
+  groupList.html('');
+  function dfs(node){
+    console.log(node);
+    var result;
+    if (node.children){
+      result = createDiv()
+      .style('border','solid red 5px')
+      .style('margin','5px');
+      node.children.forEach(element => {
+        result.child(dfs(element))
+      });
+    }else{
+      result = createDiv()
+      .style('border','solid red 5px')
+      .style('margin','5px')
+      .child(
+        createP(
+          '('+lines[node.lineidx].p1.x+";"
+          +lines[node.lineidx].p1.y+";"
+          +lines[node.lineidx].p1.z+";"
+          +lines[node.lineidx].p1.op+');('
+          +lines[node.lineidx].p2.x+";"
+          +lines[node.lineidx].p2.y+";"
+          +lines[node.lineidx].p2.z+";"
+          +lines[node.lineidx].p2.op+')'));
+    }
+    result.child(createButton('Выбрать').mousePressed(()=>{
+      if (keyIsDown(SHIFT)){
+        let nlines = node.get_linelist();
+        for (const line of nlines) {
+          selected_lines.add(line);
+          lines[line].isSelected = true;
+        }
+      }else{
+
+        unselect();
+        
+        selected_lines = node.get_linelist();
+        selected_lines.forEach(idx  => {
+          lines[idx].isSelected = true;
+        });
+      }
+    }));
+    if (!node.leaf) result.child(createButton('Разгруппировать').mousePressed(()=>{
+      if (node.parent!=null){
+        node.parent.children.delete(node);
+        node.children.forEach(element => {
+          node.parent.children.add(element);
+          element.parent = node.parent;
+        });
+      }
+      load_group();
+    }));
+    return result;
+  }
+  groupList.child(dfs(root));
+}
+
+function save_group(){
+  function dfs(node, lines_set){
+    if (node.children){
+      var cnt = 0;
+      var used = new Set();
+      node.children.forEach(element => {
+        var v = element.get_linelist();
+        let intersect = new Set(
+          [...v].filter(x => lines_set.has(x)));
+        let difference = new Set(
+            [...v].filter(x => !lines_set.has(x)));
+        if (intersect.size == lines_set.size){
+          if (used.size!=0){
+            alert('error');
+            return false;
+          }
+          if (difference.size == 0) return false;
+          return dfs(element, lines_set);
+        }
+        if (intersect.size>0 && difference.size>0){
+            alert('error');
+            return false;
+          }
+        if (intersect.size>0){
+          used.add(element);
+          cnt += v.size;
+        }    
+      });
+      if (used.size != node.children.size && cnt  == lines_set.size){
+        node.children = new Set(
+          [...node.children].filter(x => !used.has(x)));
+          let ngroup = new Group(node,used);
+          used.forEach(element => {
+            element.parent = ngroup;
+          });
+          node.children.add(ngroup);
+        return true;
+      }else return false;
+    }return false;
+  }
+  var res = dfs(root,selected_lines);
+  if (res) load_group();
+}
+
 function m_save(){
+  function dfs(node){
+    var result = {
+      'leaf': node.leaf
+    };
+    if (node.leaf) result['lineidx'] = node.lineidx;
+    else{
+      result['children'] = [];
+      node.children.forEach(element => {
+        result['children'].push(dfs(element));
+      });
+    }
+    return result;
+  }
   let json = {
-    'LinesObjects':lines
+    'LinesObjects':lines,
+    'Groups':dfs(root)
   };
   console.log(json);
   saveJSON(json,'sketch.json')
@@ -213,6 +340,21 @@ function load(file){
     let p2 = new vector3(element.p2.x,element.p2.y,element.p2.z,element.p2.op);
     lines.push(new Line(p1, p2));
   });
+  function dfs(node, parent){
+    console.log(node);
+    var ngroup;
+    if (node['leaf']){
+      ngroup = new Leaf(parent,node['lineidx']);
+    }else{
+      ngroup = new Group(parent);
+      node['children'].forEach(elem => {
+        ngroup.add(dfs(elem,ngroup));
+      });
+    }
+    return ngroup;
+  };
+  root=dfs(json['Groups']);
+  load_group();
 }
 
 var maker_selected_point;
@@ -569,6 +711,9 @@ function generateLine(){
   p1 = new vector3(int(random(width)) - width/2, - int(random(height)) + height/2);
   p2 = new vector3(int(random(width)) - width/2, - int(random(height)) + height/2);
   lines.push(new Line(p1,p2));
+  var ng = new Leaf(root,lines.length-1);
+  root.add(ng);
+  load_group();
 }
 
 function onMousePressed(){
@@ -733,14 +878,17 @@ function setupManualChange(line){
 function onDelete(){
   if (selected_lines.size>0){
     let nlines = [];
-    for (let index = 0; index < lines.length; index++) {
+    for (let index = lines.length-1; index >= 0; index--) {
       const element = lines[index];
       if (!selected_lines.has(index)){
         nlines.push(element);
+      }else{
+        root.dec(index);
       }
     }
-    lines = nlines;
+    lines = nlines.reverse();
     selected_lines.clear();
+    load_group();
   }
 }
 
