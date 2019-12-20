@@ -221,13 +221,36 @@ var maker_second_line;
 var make_operation = null;
 
 function start_median(){
-  unselect();
-  make_operation = 'median';
-  alert("Построение медианы.Выберите начальную точку или отрезок");
+  if(selected_lines.size>1){
+    var idxes = [];
+    for (const iterator of selected_lines.values()) {
+      idxes.push(iterator);
+    } 
+    for (let i = 0; i < idxes.length; i++) {
+      const first = idxes[i];
+      for (let j = i+1; j < idxes.length; j++) {
+        const second = idxes[j];
+        med(lines[first],lines[second]);
+      }
+    }
+  }else{
+    unselect();
+    make_operation = 'median';
+    alert("Построение медианы.Выберите начальную точку или отрезок");
+  }
 }
 
 function continue_median(){
   alert("Выберите отрезок, к которому провести медиану");
+}
+
+function med(first, second){
+  let start = first.p1.add(first.p2);
+  start.mult(0.5);
+  let end = second.p1.add(second.p2);
+  end.mult(0.5);
+  let line = new Line(start,end);
+  lines.push(line);
 }
 
 function make_median(){
@@ -238,12 +261,7 @@ function make_median(){
     let line = new Line(maker_selected_point, end);
     lines.push(line);
   }else{
-    let start = maker_first_line.p1.add(maker_first_line.p2);
-    start.mult(0.5);
-    let end = maker_second_line.p1.add(maker_second_line.p2);
-    end.mult(0.5);
-    let line = new Line(start,end);
-    lines.push(line);
+    med(maker_first_line,maker_second_line);
   }
   make_operation = null;
   maker_selected_point = null;
@@ -516,11 +534,6 @@ function generateLine(){
 
 function onMousePressed(){
   let mouse = mouseVector();
-  if (make_operation == 'median' && !maker_selected_point && !maker_first_line){
-    maker_selected_point = mouse;
-    continue_median();
-    return;
-  }
   if (make_operation == 'perpendicular' && !maker_selected_point){
     maker_selected_point = mouse;
     continue_perpendicular();
@@ -614,6 +627,11 @@ function onMousePressed(){
         }
       }
     }else{
+      if (make_operation == 'median' && !maker_selected_point && !maker_first_line){
+        maker_selected_point = mouse;
+        continue_median();
+        return;
+      }
       if (!keyIsDown(SHIFT)){
         unselect();
       }
