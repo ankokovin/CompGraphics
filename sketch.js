@@ -324,21 +324,34 @@ function make_perpendicular(){
 }
 
 function start_angle_bisector(){
+  if(selected_lines.size>1){
+    var idxes = [];
+    for (const iterator of selected_lines.values()) {
+      idxes.push(iterator);
+    } 
+    for (let i = 0; i < idxes.length; i++) {
+      const first = idxes[i];
+      for (let j = i+1; j < idxes.length; j++) {
+        const second = idxes[j];
+        bis(lines[first],lines[second]);
+      }
+    }
+  }else{
   unselect();
   make_operation = 'bisector';
   alert("Построение биссекртисы.Выберите первый отрезок");
+  }
 }
 
 function continue_bisector(){
   alert('Выберите второй отрезок');
 }
 
-function make_bisector(){
-  alert("Построение биссектрисы");
-  let first_start = maker_first_line.p1.copy();
-  let first_end = maker_first_line.p2.copy();
-  let second_start = maker_second_line.p1.copy();
-  let second_end = maker_second_line.p2.copy();
+function bis(first_line, second_line){
+  let first_start = first_line.p1.copy();
+  let first_end = first_line.p2.copy();
+  let second_start = second_line.p1.copy();
+  let second_end = second_line.p2.copy();
   first_start.z = 0;
   first_end.z = 0;
   second_start.z = 0;
@@ -377,8 +390,8 @@ function make_bisector(){
       ]));
     
     
-    let params_f = maker_first_line.get_params();
-    let params_s = maker_second_line.get_params();
+    let params_f = first_line.get_params();
+    let params_s = second_line.get_params();
     let delta = params_f.x*params_s.y-params_f.y*params_s.x;
     let x = ((-params_f.z)*params_s.y-params_f.y*(-params_s.z))/delta;
     let y = (params_f.z*params_s.x-params_f.x*params_s.z)/delta;
@@ -389,6 +402,11 @@ function make_bisector(){
     let line = new Line(p1.add(res),p1.sub(res));
     lines.push(line);
   }
+}
+
+function make_bisector(){
+  alert("Построение биссектрисы");
+  bis(maker_first_line,maker_second_line);
 
   make_operation = null;
   maker_selected_point = null;
